@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import { useSignUp } from "../../hooks/useSignUp";
-import SignupImg from "../../images/signup.jpg"
+import SignupImg from "../../images/signup.jpg";
 
 const ClientSignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { signUp, error, isLoading } = useSignUp();
-  const [userType, setUserType] = useState("user");
+  const [role, setRole] = useState("customer");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signUp(email, password, userType);
+    await signUp(email, password, role);
   };
 
   return (
     <div
-    style={{
-      height: "100vh",
-      backgroundSize: "cover",
-      backgroundImage: `url(${SignupImg})`,
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-    }}
-  >
-      <div className="max-w-screen-xl px-4 ml-[800px] sm:px-6 lg:px-8 pt-48">
+      style={{
+        height: "100vh",
+        backgroundSize: "cover",
+        backgroundImage: `url(${SignupImg})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="max-w-screen-xl px-4 ml-[800px] sm:px-6 lg:px-8 pt-28">
         <div className="max-w-lg mx-auto">
           <h1 className="text-3xl font-bold font-[poppins] text-center text-yellow-200 sm:text-3xl">
             Get started today
@@ -34,7 +34,9 @@ const ClientSignUp = () => {
             action="#"
             className="p-4 mb-0 space-y-4 rounded-lg shadow-lg signUp sm:p-6 lg:p-8"
           >
-            <p className="text-2xl font-bold text-center font-[poppins]">Sign up</p>
+            <p className="text-2xl font-bold text-center font-[poppins] text-white">
+              Sign up
+            </p>
 
             <div>
               <label htmlFor="email" className="sr-only">
@@ -120,7 +122,7 @@ const ClientSignUp = () => {
               Sign Up
             </button>
 
-            <p className="font-bold text-center text-black text-md">
+            <p className="font-bold text-center text-white text-md">
               Already have an account?
               <a className="ml-2 underline" href="/login">
                 Sign in

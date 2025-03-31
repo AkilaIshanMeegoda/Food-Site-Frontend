@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { useLogin } from "../../hooks/useLogin";
 import LoginImg from "../../images/login.jpg";
-import '../../index.css';
 
 const ClientLogin = () => {
   const [email, setEmail] = useState("");
@@ -19,14 +17,14 @@ const ClientLogin = () => {
     <div>
       <section className="flex flex-col items-center h-screen md:flex-row">
         <img src={LoginImg} className="object-cover w-2/3 h-full" />
-        <div className="flex items-center justify-center w-1/3 px-6 bg-white">
+        <div className="flex items-center justify-center w-1/3 min-h-screen px-6 bg-gray-800">
           <div className="w-full h-100">
             <Link to={`/`} className="font-medium ">
-              <Button className="bg-green-500 rounded-full hover:bg-green-700">
+              <button className="px-4 text-white rounded-full bg-main-color hover:bg-orange-800">
                 Home
-              </Button>
-              <h1 className="mt-8 text-3xl font-[poppins] font-bold leading-tight text-yellow-900 md:text-2xl">
-                Welcome to QuickyShop!
+              </button>
+              <h1 className="mt-8 text-3xl font-[poppins] font-bold leading-tight text-white md:text-2xl">
+                Welcome to EpicEats
               </h1>
             </Link>
             <h1 className="mt-4 text-xl font-bold leading-tight text-blue-600 md:text-2xl">
@@ -34,7 +32,7 @@ const ClientLogin = () => {
             </h1>
             <form className="mt-6 login" action="#" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-gray-700">Email Address</label>
+                <label className="block text-white">Email Address</label>
                 <input
                   type="email"
                   name="email"
@@ -48,7 +46,7 @@ const ClientLogin = () => {
               </div>
 
               <div className="mt-4">
-                <label className="block text-gray-700">Password</label>
+                <label className="block text-white">Password</label>
                 <input
                   type="password"
                   name="password"
@@ -64,7 +62,7 @@ const ClientLogin = () => {
               <div className="mt-2 text-right">
                 <a
                   href="#"
-                  className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700"
+                  className="text-sm font-semibold text-gray-200 hover:text-blue-700 focus:text-blue-700"
                 >
                   Forgot Password?
                 </a>
@@ -81,14 +79,14 @@ const ClientLogin = () => {
             </form>
             <hr className="w-full my-6 border-gray-300" />
 
-            <p className="mt-8">
+            <p className="mt-8 text-white">
               Need an account?{" "}
-              <a
-                href="/signup"
+              <Link
+                to="/signup"
                 className="font-semibold text-blue-500 hover:text-blue-700"
               >
                 Create an account
-              </a>
+              </Link>
             </p>
           </div>
         </div>

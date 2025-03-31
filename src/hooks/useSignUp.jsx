@@ -10,7 +10,7 @@ export const useSignUp = () => {
   const { dispatch } = useAuthContext();
   const navigate=useNavigate()
 
-  const signUp = async (email, password,userType) => {
+  const signUp = async (email, password,role) => {
     setIsLoading(true);
     setError(null);
     const showSuccess = () => {
@@ -23,7 +23,7 @@ export const useSignUp = () => {
     const response = await fetch("http://localhost:5000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password ,userType}),
+      body: JSON.stringify({ email, password ,role}),
     });
     const json = await response.json();
 
