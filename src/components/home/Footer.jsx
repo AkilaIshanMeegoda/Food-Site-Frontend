@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="px-6 py-10 text-white bg-gray-900">
       <div className="flex flex-row">
         {/* Logo & Description */}
-        <div className="w-96">
+        <div className="ml-20 w-96">
           <div className="flex items-center">
             <FaStore className="text-3xl text-main-color" />
             <h2 className="ml-2 text-2xl font-bold text-white">
@@ -26,7 +26,7 @@ const Footer = () => {
         </div>
 
         {/* Other Links */}
-        <div className="ml-28 w-96">
+        <div className="ml-60 w-96">
           <h3 className="mb-4 text-lg font-semibold text-white">Other Links</h3>
           <ul className="space-y-2 text-gray-400">
             <li className="cursor-pointer hover:text-white">Home</li>

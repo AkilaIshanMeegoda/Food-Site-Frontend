@@ -47,8 +47,16 @@ export const useLogin = () => {
       localStorage.setItem("user", JSON.stringify(json));
       dispatch({ type: "LOGIN", payload: json });
       setIsLoading(false);
-      navigate("/");
-      showSuccess();
+      if (json.role == "customer") {
+        navigate("/");
+        showSuccess();
+      } else if(json.role == "restaurant_admin") {
+        navigate("/restaurant_admin/dashboard/home");
+        showSuccess();
+      } else if(json.role == "delivery_personnel") {
+        navigate("/delivery/dashboard/home");
+        showSuccess();
+      }
     }
   };
   return { login, isLoading, error };

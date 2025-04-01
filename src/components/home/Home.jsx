@@ -7,6 +7,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import step from "../../images/orderStep.png";
 import FoodCategory from "./FoodCategory";
 import Footer from "./Footer";
+import FoodDescription from "./Navbar/FoodDescription";
 
 const Home = () => {
   return (
@@ -45,6 +46,7 @@ const Home = () => {
         <HomeContainer />
         <img src={step} alt="Step" className="object-cover w-full mt-16" />
         <FoodCategory />
+        <FoodDescription/>
       </div>
         <Footer />  
     </div>

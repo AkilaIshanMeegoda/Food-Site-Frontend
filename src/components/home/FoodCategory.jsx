@@ -1,17 +1,52 @@
 import { useState } from "react";
+import Grill from "../../images/grilled.jpg";
+import pepperoniPizza from "../../images/pepperonipizza.jpg"
+import vegBurger from "../../images/vegburger.jpg"
+import cheeseBurger from "../../images/cheeseBurger.jpg"
+import bbqPizza from "../../images/bbq.jpg"
+import friedRice from "../../images/friedRice.jpg"
+import steamedRice from "../../images/steamedRice.jpg"
+import paella from "../../images/paella.jpg"
+import pulao from "../../images/pulao.jpg"
 
 const categories = [
+  { name: "Burgers & Pizza", icon: "🍔", key: "burgers_pizza" },
   { name: "All Chicken Dish", icon: "🍗", key: "chicken" },
   { name: "All Seafood Dish", icon: "🐟", key: "seafood" },
-  { name: "Burgers & Pizza", icon: "🍔", key: "burgers_pizza" },
   { name: "Rice", icon: "🍚", key: "rice" },
 ];
 
 const restaurants = {
+  burgers_pizza: [
+    {
+      name: "Cheese Burger",
+      image: cheeseBurger,
+      rating: 4.2,
+      price: "Rs.1000",
+    },
+    {
+      name: "Pepperoni Pizza",
+      image: pepperoniPizza,
+      rating: 4.6,
+      price: "Rs.1000",
+    },
+    {
+      name: "Veggie Burger",
+      image: vegBurger,
+      rating: 4.4,
+      price: "Rs.1000",
+    },
+    {
+      name: "BBQ Chicken Pizza",
+      image: bbqPizza,
+      rating: 4.5,
+      price: "Rs.1000",
+    },
+  ],
   chicken: [
     {
       name: "Grilled Chicken",
-      image: "grilled_chicken.jpg",
+      image: Grill,
       rating: 4.5,
       price: "Rs 1500.00",
     },
@@ -60,54 +95,29 @@ const restaurants = {
       price: "Rs.1000",
     },
   ],
-  burgers_pizza: [
-    {
-      name: "Cheese Burger",
-      image: "cheese_burger.jpg",
-      rating: 4.2,
-      price: "Rs.1000",
-    },
-    {
-      name: "Pepperoni Pizza",
-      image: "pepperoni_pizza.jpg",
-      rating: 4.6,
-      price: "Rs.1000",
-    },
-    {
-      name: "Veggie Burger",
-      image: "veggie_burger.jpg",
-      rating: 4.4,
-      price: "Rs.1000",
-    },
-    {
-      name: "BBQ Chicken Pizza",
-      image: "bbq_chicken_pizza.jpg",
-      rating: 4.5,
-      price: "Rs.1000",
-    },
-  ],
+
   rice: [
     {
       name: "Fried Rice",
-      image: "fried_rice.jpg",
+      image: friedRice,
       rating: 4.3,
       price: "Rs.1000",
     },
     {
       name: "Steamed Rice & Curry",
-      image: "steamed_rice_curry.jpg",
+      image: steamedRice,
       rating: 4.6,
       price: "Rs.1000",
     },
     {
       name: "Seafood Paella",
-      image: "seafood_paella.jpg",
+      image: paella,
       rating: 4.8,
       price: "Rs.1000",
     },
     {
       name: "Vegetable Pulao",
-      image: "vegetable_pulao.jpg",
+      image: pulao,
       rating: 4.5,
       price: "Rs.1000",
     },
@@ -115,26 +125,30 @@ const restaurants = {
 };
 
 const FoodCategory = () => {
-  const [selectedCategory, setSelectedCategory] = useState("chicken");
+  const [selectedCategory, setSelectedCategory] = useState("burgers_pizza");
 
   return (
-    <div className="flex gap-8 p-6">
+    <div className="flex gap-8 p-6 px-60">
       <div className="w-1/4">
-        <h2 className="text-2xl font-bold ">Quick Pick Restaurants</h2>
+        <h2 className="text-3xl font-bold ">Quick Pick Top Rated Foods</h2>
         <hr className="mb-8 border-2 rounded-full border-main-color" />
         <div className="flex flex-col gap-8">
           {categories.map((category) => (
             <button
               key={category.key}
-              className={`flex items-center gap-2 px-6 py-6 rounded-full border transition-all ${
+              className={`flex items-center justify-left gap-2 px-6 py-6 rounded-full border transition-all ${
                 selectedCategory === category.key
                   ? "bg-orange-500 text-white"
                   : "bg-white shadow-lg border-gray-300 hover:shadow-2xl"
               }`}
               onClick={() => setSelectedCategory(category.key)}
             >
-              <span className="text-lg">{category.icon}</span>
-              <span className="font-semibold">{category.name}</span>
+              <span className="flex items-center justify-center text-lg">
+                {category.icon}
+              </span>
+              <span className="flex items-center justify-center font-semibold">
+                {category.name}
+              </span>
             </button>
           ))}
         </div>
@@ -146,7 +160,7 @@ const FoodCategory = () => {
             <img
               src={restaurant.image}
               alt={restaurant.name}
-              className="object-cover w-full h-40 rounded-lg"
+              className="object-cover w-full rounded-lg h-60"
             />
             <h3 className="mt-2 font-semibold text-gray-900">
               {restaurant.name}
