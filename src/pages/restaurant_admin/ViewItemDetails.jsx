@@ -5,7 +5,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import Navbar from "../../components/home/Navbar/Navbar";
 import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
 
-const ViewItem = () => {
+const ViewItemDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
@@ -13,12 +13,10 @@ const ViewItem = () => {
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
 
-  
   useEffect(() => {
     const fetchItem = async () => {
       try {
         setLoading(true);
-        console.log("check item id", id);
         const response = await fetch(`http://localhost:5001/api/menu-items/${id}`, {
           method: "GET",
           headers: {
@@ -173,4 +171,4 @@ const ViewItem = () => {
   );
 };
 
-export default ViewItem;
+export default ViewItemDetails;

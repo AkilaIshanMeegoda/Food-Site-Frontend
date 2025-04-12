@@ -10,8 +10,10 @@ import Delivery_Home from "../pages/delivery_personnel/Delivery_Home";
 import ManageItems from "../pages/restaurant_admin/ManageItems";
 import ManageOrders from "../pages/restaurant_admin/ManageOrders";
 import AddItem from "../pages/restaurant_admin/AddItem";
-import ViewItemDetails from "../pages/restaurant_admin/ViewItemDetails";
 import UpdateItem from "../pages/restaurant_admin/UpdateItem";
+import MenuItems from "../components/menuItems/MenuItems";
+import ItemDetails from "../components/menuItems/ItemDetails";
+import ViewItemDetails from "../pages/restaurant_admin/ViewItemDetails";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -23,6 +25,14 @@ function CreateRouter() {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/menuItems",
+          element: <MenuItems />,
+        },
+        {
+          path: "/view-menuItem/:id",
+          element: <ItemDetails />,
         },
         {
           path: "/login",

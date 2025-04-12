@@ -4,72 +4,65 @@ import Navbar from "../../components/home/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Spinner } from "flowbite-react";
+import { storage } from "./../../utils/firebaseConfig"; // Your firebase config should export `storage`
 
 const AddItem = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
-    category: "Burger" // Default category
+    category: "Burger",
+    image: "",
   });
 
-  const categories = [
-    "Burger",
-    "Pizza",
-    "Pasta",
-    "Salad",
-    "Drinks",
-    "Dessert",
-    "Fried Rice",
-  ];
+  const categories = ["Burger", "Pizza", "Pasta", "Drinks", "Snacks", "BBQ", "Desserts"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    validateField(name, value);
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (value.trim() === "") {
+      setErrors((prev) => ({ ...prev, [name]: `${name} is required` }));
+    } else {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  const validateField = (name, value) => {
-    let error = "";
-    switch (name) {
-      case "name":
-        if (!value.trim()) error = "Name is required";
-        else if (value.length < 3) error = "Name must be at least 3 characters";
-        break;
-      case "description":
-        if (!value.trim()) error = "Description is required";
-        break;
-      case "price":
-        if (!value) error = "Price is required";
-        else if (isNaN(value) || parseFloat(value) <= 0) error = "Price must be a positive number";
-        break;
-      default:
-        break;
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`items/${Date.now()}-${file.name}`);
+
+    try {
+      await fileRef.put(file);
+      const downloadURL = await fileRef.getDownloadURL();
+      setFormData((prev) => ({ ...prev, image: downloadURL }));
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Image upload error:", error);
+      toast.error("Image upload failed");
+    } finally {
+      setUploading(false);
     }
-    setErrors(prev => ({ ...prev, [name]: error }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate all fields before submission
-    Object.keys(formData).forEach(field => {
-      validateField(field, formData[field]);
-    });
-
-    if (Object.values(errors).some(error => error) || !formData.name || !formData.description || !formData.price) {
-      toast.error("Please fix all errors before submitting");
-      return;
-    }
-
     setLoading(true);
+
+    const itemObj = {
+      ...formData,
+      price: parseFloat(formData.price),
+    };
+
     try {
       const response = await fetch("http://localhost:5001/api/menu-items/", {
         method: "POST",
@@ -77,125 +70,91 @@ const AddItem = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
-        body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          price: parseFloat(formData.price),
-          category: formData.category
-        })
+        body: JSON.stringify(itemObj),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add item");
+      if (response.ok) {
+        toast.success("Item added successfully!");
+        navigate("/shopOwner/dashboard/view-items");
+      } else {
+        toast.error("Failed to add item.");
       }
-
-      toast.success("Item added successfully!");
-      navigate("/manage-items");
-    } catch (error) {
-      toast.error(error.message);
+    } catch (err) {
+      toast.error("Server error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-    <h1
-        className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-black"
-        style={{ fontSize: "2rem", marginTop: "40px", marginBottom: "40px", marginLeft: "20px" }}
-      >
-        Add New Item
-    </h1>
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold mb-6">Add New Menu Item</h1>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-                placeholder="Item name"
-              />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-            </div>
+    <div className="min-h-screen bg-gray-100 pb-16">
+      <Navbar />
+      <div className="max-w-4xl mx-auto mt-16 p-8 bg-white shadow rounded-3xl">
+        <h2 className="text-2xl font-bold mb-6">Add New Item</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <input
+            type="text"
+            name="name"
+            placeholder="Item Name"
+            className="w-full p-2 border rounded"
+            onChange={handleChange}
+            required
+          />
+          {errors.name && <p className="text-red-500">{errors.name}</p>}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-                rows="3"
-                placeholder="Item description"
-              />
-              {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-            </div>
+          <textarea
+            name="description"
+            rows={4}
+            placeholder="Description"
+            className="w-full p-2 border rounded"
+            onChange={handleChange}
+            required
+          />
+          {errors.description && <p className="text-red-500">{errors.description}</p>}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price (Rs.)
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
-                />
-                {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
-              </div>
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            className="w-full p-2 border rounded"
+            onChange={handleChange}
+            required
+          />
+          {errors.price && <p className="text-red-500">{errors.price}</p>}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                >
-                  {categories.map(category => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+          <select
+            name="category"
+            className="w-full p-2 border rounded"
+            onChange={handleChange}
+            value={formData.category}
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
 
-            <div className="flex justify-end space-x-4 pt-4">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading || Object.values(errors).some(error => error)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
-              >
-                {loading ? "Adding..." : "Add Item"}
-              </button>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="w-full"
+          />
+          {uploading && (
+            <div className="flex items-center gap-2">
+              <Spinner size="sm" /> Uploading...
             </div>
-          </form>
-        </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={uploading || loading || !formData.image}
+            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          >
+            {loading ? "Adding..." : "Add Item"}
+          </button>
+        </form>
       </div>
     </div>
   );

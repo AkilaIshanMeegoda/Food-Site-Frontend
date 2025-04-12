@@ -84,7 +84,12 @@ const ManageItems = () => {
     <div className="p-8">
       <h1
         className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-black"
-        style={{ fontSize: "2rem", marginTop: "40px", marginBottom: "40px", marginLeft: "20px" }}
+        style={{
+          fontSize: "2rem",
+          marginTop: "40px",
+          marginBottom: "40px",
+          marginLeft: "20px",
+        }}
       >
         Manage Items
       </h1>
@@ -101,21 +106,26 @@ const ManageItems = () => {
               className="relative overflow-hidden bg-white shadow-md cursor-pointer rounded-2xl"
               onClick={() => handleCardClick(item._id)}
             >
-              <div className="relative h-52 w-80">
+              <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+                {/* Loading spinner */}
                 {loadingImages[item._id] && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-8 h-8 border-4 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
                   </div>
                 )}
+
+                {/* Image with consistent sizing */}
                 <img
-                  src={item.image || "https://via.placeholder.com/150"}
+                  src={
+                    item.image ||
+                    "https://via.placeholder.com/300x200?text=No+Image"
+                  }
                   alt={item.name}
-                  className="object-contain pt-8 m-4 h-52 w-80"
+                  className={`absolute inset-0 w-full h-full object-cover ${
+                    loadingImages[item._id] ? "opacity-0" : "opacity-100"
+                  }`}
                   onLoad={() => handleImageLoad(item._id)}
                   onError={() => handleImageError(item._id)}
-                  style={{
-                    display: loadingImages[item._id] ? "none" : "block",
-                  }}
                 />
               </div>
 

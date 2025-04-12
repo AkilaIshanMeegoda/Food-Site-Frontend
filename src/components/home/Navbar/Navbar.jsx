@@ -52,7 +52,7 @@ const Navbar = () => {
       <Link to="/contact" className="flex items-center space-x-1 transition-transform hover:scale-110">
         <FaPhone /> <span>Contact</span>
       </Link>
-      <Link to="/menu" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link to="/menuItems" className="flex items-center space-x-1 transition-transform hover:scale-110">
         <FaListAlt /> <span>Menu</span>
       </Link>
       <Link to="/restaurants" className="flex items-center space-x-1 transition-transform hover:scale-110">
