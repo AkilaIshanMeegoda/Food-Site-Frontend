@@ -16,6 +16,7 @@ import ItemDetails from "../components/menuItems/ItemDetails";
 import ViewItemDetails from "../pages/restaurant_admin/ViewItemDetails";
 import Restaurants from "../pages/restaurant_admin/Restaurants";
 import RestaurantItems from "../pages/restaurant_admin/RestaurantItems";
+import CategoryItems from "../pages/restaurant_admin/CategoryItems";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -43,6 +44,10 @@ function CreateRouter() {
         {
           path: "/restaurants-all-items/:id",
           element: <RestaurantItems />,
+        },
+        {
+          path: "/category-items/:category",
+          element: <CategoryItems />,
         },
         {
           path: "/login",
