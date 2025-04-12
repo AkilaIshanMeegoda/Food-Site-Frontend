@@ -14,6 +14,8 @@ import UpdateItem from "../pages/restaurant_admin/UpdateItem";
 import MenuItems from "../components/menuItems/MenuItems";
 import ItemDetails from "../components/menuItems/ItemDetails";
 import ViewItemDetails from "../pages/restaurant_admin/ViewItemDetails";
+import Restaurants from "../pages/restaurant_admin/Restaurants";
+import RestaurantItems from "../pages/restaurant_admin/RestaurantItems";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -33,6 +35,14 @@ function CreateRouter() {
         {
           path: "/view-menuItem/:id",
           element: <ItemDetails />,
+        },
+        {
+          path: "/restaurants",
+          element: <Restaurants />,
+        },
+        {
+          path: "/restaurants-all-items/:id",
+          element: <RestaurantItems />,
         },
         {
           path: "/login",
