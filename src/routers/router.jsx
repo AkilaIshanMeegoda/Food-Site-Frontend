@@ -7,6 +7,8 @@ import AdminDashboardLayout from "../pages/restaurant_admin/AdminDashboardLayout
 import Admin_Home from "../pages/restaurant_admin/Admin_Home";
 import DeliveryDashboardLayout from "../pages/delivery_personnel/DeliveryDashboardLayout";
 import Delivery_Home from "../pages/delivery_personnel/Delivery_Home";
+import DeliveryRegistrationForm from "../pages/delivery_personnel/DeliveryRegistrationForm.jsx";
+import MyDeliveries from "../pages/delivery_personnel/MyDeliveries.jsx";
 import CheckoutLayout from "../pages/checkout/CheckoutLayout";
 import Success from "../pages/checkout/SuccessPage";
 import Cancel from "../pages/checkout/CancelPage";
@@ -44,6 +46,8 @@ function CreateRouter() {
       element: <DeliveryDashboardLayout />,
       children: [
         { path: "/delivery/dashboard/home", element: <Delivery_Home /> },
+        { path: "/delivery/dashboard/register", element: <DeliveryRegistrationForm /> },
+        { path: "/delivery/dashboard/my-deliveries", element: <MyDeliveries /> },
       ],
     },
     {
