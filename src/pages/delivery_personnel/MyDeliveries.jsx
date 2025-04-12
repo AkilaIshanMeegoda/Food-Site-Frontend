@@ -2,19 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Footer, Navbar } from "flowbite-react";
+import DriverMap from "./../../components/driver/DriverMap";
 
 const MyDeliveries = () => {
   const [deliveries, setDeliveries] = useState([]);
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id; //correct way to get deliveryPersonnelId
 
   const fetchDeliveries = async () => {
     try {
       const res = await axios.get(
         "http://localhost:5003/delivery-personnel/my-deliveries",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setDeliveries(res.data);
@@ -29,22 +30,26 @@ const MyDeliveries = () => {
   }, []);
 
   const handleAccept = async (orderId) => {
-    try {
+    try {  
       await axios.post(
         "http://localhost:5003/delivery/accept",
         { orderId },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
+  
       toast.success("Delivery Accepted!");
       fetchDeliveries();
     } catch (error) {
       toast.error("Failed to accept delivery.");
+      console.error(
+        "Accept delivery error:",
+        error.response?.data || error.message
+      );
     }
   };
+  
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
@@ -52,9 +57,7 @@ const MyDeliveries = () => {
         `http://localhost:5003/delivery/update-status/${orderId}`,
         { status: newStatus },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       toast.success("Status updated!");
@@ -99,70 +102,45 @@ const MyDeliveries = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-200">
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Order ID
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Pickup Address
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Drop-off Address
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Status
-                  </th>
-                  <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
+                  <th className="px-4 py-2">Order ID</th>
+                  <th className="px-4 py-2">Pickup Address</th>
+                  <th className="px-4 py-2">Drop-off Address</th>
+                  <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {deliveries.map((delivery) => (
-                  <tr key={delivery._id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-800">
-                      {delivery.orderId}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-800">
-                      {delivery.pickupAddress}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-800">
-                      {delivery.dropoffAddress}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
+                  <tr key={delivery._id} className="border-b">
+                    <td className="px-4 py-3">{delivery.orderId}</td>
+                    <td className="px-4 py-3">{delivery.pickupAddress}</td>
+                    <td className="px-4 py-3">{delivery.dropoffAddress}</td>
+                    <td className="px-4 py-3">
                       <span className={getStatusBadge(delivery.status)}>
                         {delivery.status.replaceAll("_", " ").toUpperCase()}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center text-sm">
-                      {delivery.status === "pending" && (
+                    <td className="px-4 py-3 text-center">
+                      {delivery.status === "pending" ? (
                         <button
-                          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full"
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
                           onClick={() => handleAccept(delivery.orderId)}
                         >
                           Accept
                         </button>
-                      )}
-
-                      {(delivery.status === "accepted" ||
-                        delivery.status === "picked_up" ||
-                        delivery.status === "on_the_way") && (
-                        <div className="mt-2">
-                          <select
-                            value={delivery.status}
-                            onChange={(e) =>
-                              handleStatusUpdate(
-                                delivery.orderId,
-                                e.target.value
-                              )
-                            }
-                            className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
-                          >
-                            <option value="accepted">Accepted</option>
-                            <option value="picked_up">Picked Up</option>
-                            <option value="on_the_way">On The Way</option>
-                            <option value="delivered">Delivered</option>
-                          </select>
-                        </div>
+                      ) : (
+                        <select
+                          value={delivery.status}
+                          onChange={(e) =>
+                            handleStatusUpdate(delivery.orderId, e.target.value)
+                          }
+                          className="border p-2 rounded"
+                        >
+                          <option value="accepted">Accepted</option>
+                          <option value="picked_up">Picked Up</option>
+                          <option value="on_the_way">On The Way</option>
+                          <option value="delivered">Delivered</option>
+                        </select>
                       )}
                     </td>
                   </tr>
@@ -171,6 +149,13 @@ const MyDeliveries = () => {
             </table>
           </div>
         )}
+
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold text-center mb-4">
+            📍 Real-Time Driver Location
+          </h3>
+          <DriverMap userId={userId} />
+        </div>
       </div>
       <Footer />
     </div>
