@@ -17,6 +17,11 @@ import ViewItemDetails from "../pages/restaurant_admin/ViewItemDetails";
 import Restaurants from "../pages/restaurant_admin/Restaurants";
 import RestaurantItems from "../pages/restaurant_admin/RestaurantItems";
 import CategoryItems from "../pages/restaurant_admin/CategoryItems";
+import DeliveryRegistrationForm from "../pages/delivery_personnel/DeliveryRegistrationForm.jsx";
+import MyDeliveries from "../pages/delivery_personnel/MyDeliveries.jsx";
+import CheckoutLayout from "../pages/checkout/CheckoutLayout";
+import Success from "../pages/checkout/SuccessPage";
+import Cancel from "../pages/checkout/CancelPage";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -91,8 +96,18 @@ function CreateRouter() {
       element: <DeliveryDashboardLayout />,
       children: [
         { path: "/delivery/dashboard/home", element: <Delivery_Home /> },
+        { path: "/delivery/dashboard/register", element: <DeliveryRegistrationForm /> },
+        { path: "/delivery/dashboard/my-deliveries", element: <MyDeliveries /> },
       ],
     },
+    {
+      path: "/checkout",
+      element: <CheckoutLayout />,
+      children: [
+        { path: "/checkout/success", element: <Success /> },
+        { path: "/checkout/cancel", element: <Cancel /> },
+      ]
+    }
   ]);
 }
 export default CreateRouter;
