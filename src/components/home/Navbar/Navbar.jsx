@@ -62,7 +62,7 @@ const Navbar = () => {
       </Link>
       {/* Additional "Become a Member" tab for customers */}
       {user?.role === "customer" && (
-        <Link to="/become-a-member" className="flex items-center space-x-1 transition-transform hover:scale-110">
+        <Link to="/restaurant-signup" className="flex items-center space-x-1 transition-transform hover:scale-110">
           <FaUserPlus /> <span>Become a Member</span>
         </Link>
       )}
