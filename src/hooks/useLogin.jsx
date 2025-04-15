@@ -56,6 +56,9 @@ export const useLogin = () => {
       } else if(json.role == "delivery_personnel") {
         navigate("/delivery/dashboard/home");
         showSuccess();
+      } else if(json.role == "super_admin") {
+        navigate("/super_admin/dashboard/home");
+        showSuccess();
       }
     }
   };
