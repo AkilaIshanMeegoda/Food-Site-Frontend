@@ -1,12 +1,52 @@
 import React, { useState } from "react";
 import Navbar from "../../components/home/Navbar/Navbar";
 import { FaDollarSign, FaClipboardList, FaUtensils } from "react-icons/fa";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Spinner } from "flowbite-react";
 
 const Admin_Home = () => {
+  const { user } = useAuthContext();
+  const [loading, setLoading] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
 
-  const toggleAvailability = () => {
-    setIsAvailable((prev) => !prev);
+  console.log("check user", user);
+  const toggleAvailability = async () => {
+    if (!user || !user.token || !user.restaurantId) {
+      console.log("User not authenticated or missing restaurant ID");
+      toast.error("Authentication required");
+      return;
+    }
+  console.log("check user, token, restaurantId", user.token, user.restaurantId);
+    try {
+      setLoading(true);
+      const newStatus = !isAvailable;
+      
+      const response = await fetch(
+        `http://localhost:5001/api/restaurants/${user.restaurantId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+          },
+          body: JSON.stringify({ isAvailable: newStatus })
+        }
+      );
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Update failed");
+      }
+  
+      setIsAvailable(newStatus);
+      toast.success(`Status updated to ${newStatus ? "Available" : "Unavailable"}`);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,10 +94,20 @@ const Admin_Home = () => {
               <FaUtensils className="text-3xl text-yellow-500 bg-yellow-800 p-2 rounded-full" />
             </div>
             <button
-              onClick={toggleAvailability}
-              className="mt-2 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 transition"
-            >
-              {isAvailable ? "Make Unavailable" : "Make Available"}
+                onClick={toggleAvailability}
+                disabled={loading}
+                className="mt-2 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 transition disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Spinner size="sm" />
+                    Updating...
+                  </div>
+                ) : isAvailable ? (
+                  "Make Unavailable"
+                ) : (
+                  "Make Available"
+                )}
             </button>
           </div>
         </div>

@@ -22,6 +22,9 @@ import MyDeliveries from "../pages/delivery_personnel/MyDeliveries.jsx";
 import CheckoutLayout from "../pages/checkout/CheckoutLayout";
 import Success from "../pages/checkout/SuccessPage";
 import Cancel from "../pages/checkout/CancelPage";
+import RestaurantSignUp from "../components/landingPage/RestaurantSignUp.jsx";
+import SuperAdminDashboardLayout from "../pages/super_admin/SuperAdminDashboardLayout.jsx";
+import SuperAdminHome from "../pages/super_admin/SuperAdminHome.jsx";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -62,6 +65,10 @@ function CreateRouter() {
           path: "/signup",
           element: <SignUp />,
         },
+        {
+          path: "/restaurant-signup",
+          element: <RestaurantSignUp />,
+        },
       ],
     },
     {
@@ -88,6 +95,16 @@ function CreateRouter() {
         { 
           path: "/restaurant_admin/dashboard/update-item/:id", 
           element: <UpdateItem /> 
+        },
+      ],
+    },
+    {
+      path: "/super_admin/dashboard",
+      element: <SuperAdminDashboardLayout />,
+      children: [
+        { 
+          path: "/super_admin/dashboard/home", 
+          element: <SuperAdminHome /> 
         },
       ],
     },

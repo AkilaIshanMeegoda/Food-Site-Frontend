@@ -10,7 +10,8 @@ import {
   FaStore,
   FaPlusCircle,
   FaEdit,
-  FaClipboardList
+  FaClipboardList,
+  FaUserPlus 
 } from "react-icons/fa";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useLogout } from "../../../hooks/useLogout";
@@ -41,7 +42,8 @@ const Navbar = () => {
   };
 
   // Common links for non-admin users
-  const commonLinks = !user?.role && (
+  // Render common links for guests and when user role is "customer"
+  const commonLinks = (!user || user?.role === "customer") && (
     <>
       <Link to="/" className="flex items-center space-x-1 transition-transform hover:scale-110">
         <FaHome /> <span>Home</span>
@@ -58,8 +60,15 @@ const Navbar = () => {
       <Link to="/restaurants" className="flex items-center space-x-1 transition-transform hover:scale-110">
         <FaStore /> <span>Restaurants</span>
       </Link>
+      {/* Additional "Become a Member" tab for customers */}
+      {user?.role === "customer" && (
+        <Link to="/restaurant-signup" className="flex items-center space-x-1 transition-transform hover:scale-110">
+          <FaUserPlus /> <span>Become a Member</span>
+        </Link>
+      )}
     </>
   );
+
 
   // Admin specific links (only shown if user is restaurant_admin)
   const adminLinks = user?.role === "restaurant_admin" && (
