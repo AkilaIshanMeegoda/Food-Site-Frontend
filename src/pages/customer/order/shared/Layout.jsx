@@ -12,7 +12,7 @@ const Layout = ({
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">FoodExpress</h1>
+          <h1 className="text-3xl font-bold text-gray-900">EpicEats</h1>
           <div className="flex space-x-4">
             <button 
               onClick={() => onTabChange('menu')}
