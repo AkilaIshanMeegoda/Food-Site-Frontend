@@ -16,9 +16,11 @@ const AddItem = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    preparationTime: "",
     price: "",
     category: "Burger",
     image: "",
+    isAvailable: false,
   });
 
   const categories = ["Burger", "Pizza", "Pasta", "Drinks", "Snacks", "BBQ", "Desserts"];
@@ -33,6 +35,11 @@ const AddItem = () => {
     }
   };
 
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+  
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -102,6 +109,16 @@ const AddItem = () => {
           />
           {errors.name && <p className="text-red-500">{errors.name}</p>}
 
+          <input
+            type="text"
+            name="preparationTime"
+            placeholder="Preparation Time"
+            className="w-full p-2 border rounded"
+            onChange={handleChange}
+            required
+          />
+          {errors.preparationTime && <p className="text-red-500">{errors.preparationTime}</p>}
+
           <textarea
             name="description"
             rows={4}
@@ -134,6 +151,16 @@ const AddItem = () => {
               </option>
             ))}
           </select>
+          
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="availability"
+              checked={formData.availability}
+              onChange={handleCheckboxChange}
+            />
+            <span>Available</span>
+          </label>
 
           <input
             type="file"

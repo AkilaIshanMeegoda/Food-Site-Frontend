@@ -1,45 +1,90 @@
 import React from "react";
+import { ShoppingCart } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MenuItemCard = ({ item, onCardClick }) => {
+
+  const handleAddToCart = (e, item) => {
+    e.stopPropagation();
+    if (!item.isAvailable) return;
+
+    // TEMPORARY: Just toast notification
+    toast.success(`“${item.name} ${item._id}” added to cart!`);
+    
+    // TODO: Connect to your cart system:
+    // 1. Use context: const { addToCart } = useCart();
+    // 2. Call addToCart(item)
+  };
+
   return (
     <div
       key={item._id}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="group relative bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-300"
       onClick={() => onCardClick(item._id)}
     >
-      <div className="p-4 h-48 flex items-center justify-center bg-gray-50">
+      {/* Image section with hover-cart overlay */}
+      <div className="relative h-48 bg-gray-100">
         {item.image ? (
           <img
-            className="object-cover w-full h-full"
             src={item.image}
             alt={item.name}
+            className="w-full h-full object-cover"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "https://via.placeholder.com/300?text=No+Image";
             }}
           />
         ) : (
-          <div className="h-full w-full flex items-center justify-center bg-gray-200 text-gray-500">
+          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
             No Image
           </div>
         )}
+
+        {/* Add to Cart overlay button */}
+        <button
+          type="button"
+          onClick={(e) => handleAddToCart(e, item)}
+          disabled={!item.isAvailable}
+          className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 disabled:opacity-50"
+        >
+          <ShoppingCart size={20} className="text-blue-600" />
+        </button>
       </div>
 
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h2 className="text-lg font-semibold">{item.name}</h2>
-          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+      {/* Details section */}
+      <div className="p-5 flex flex-col h-full">
+        {/* Title and Category */}
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-bold text-gray-800 truncate">{item.name}</h3>
+          <span className="text-xs font-medium px-2 py-1 bg-blue-50 text-blue-600 rounded-full">
             {item.category || "Uncategorized"}
           </span>
         </div>
 
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-          {item.description || "No description available"}
-        </p>
-
-        <div className="text-xl font-bold text-gray-900">
-          Rs. {item.price || "N/A"}
+        {/* Price and Availability */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xl font-semibold text-gray-900">
+            Rs. {item.price ?? "N/A"}
+          </span>
+          <span
+            className={`text-xs font-medium px-2 py-1 rounded-full ${
+              item.isAvailable
+                ? "bg-green-50 text-green-600"
+                : "bg-red-50 text-red-600"
+            }`}
+          >
+            {item.isAvailable ? "Available" : "Unavailable"}
+          </span>
         </div>
+
+        {/* Preparation time if available */}
+        {item.preparationTime && (
+          <div className="flex items-center text-sm text-gray-500 mb-2">
+            <span>⏱ {item.preparationTime} mins</span>
+          </div>
+        )}
+
       </div>
     </div>
   );
