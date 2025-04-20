@@ -9,6 +9,10 @@ const ItemDetails = () => {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const handleAddToCart = () => {
+    toast.success(`${item.name} added to cart!`);
+  };
+
   useEffect(() => {
     const fetchItemDetails = async () => {
       try {
@@ -103,17 +107,27 @@ const ItemDetails = () => {
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
                     <p className="text-sm text-gray-500">Availability</p>
-                    <p className={`font-medium ${item.availability ? 'text-green-600' : 'text-red-600'}`}>
-                      {item.availability ? "In Stock" : "Out of Stock"}
+                    <p className={`font-medium ${item.isAvailable ? 'text-green-600' : 'text-red-600'}`}>
+                      {item.isAvailable ? "In Stock" : "Out of Stock"}
                     </p>
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">Servings</p>
-                    <p className="font-medium">{item.servings || "Single serving"}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
                     <p className="text-sm text-gray-500">Preparation Time</p>
-                    <p className="font-medium">{item.prepTime || "15-20 mins"}</p>
+                    <p className="font-medium">{item.preparationTime || "15-20 mins"}</p>
+                  </div>
+                  <div>
+                     {/* Add to Cart Button */}
+                  <button 
+                    disabled={!item.isAvailable}
+                    onClick={handleAddToCart}
+                    className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-colors ${
+                      item.isAvailable 
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    {item.isAvailable ? "Add to Cart" : "Out of Stock"}
+                  </button>
                   </div>
                 </div>
 
