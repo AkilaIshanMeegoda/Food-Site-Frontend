@@ -8,8 +8,12 @@ const MyDeliveries = () => {
   const [deliveries, setDeliveries] = useState([]);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user?.id; //correct way to get deliveryPersonnelId
+  const userId = user?.userId; 
 
+  
+  console.log("Token:", token);
+  console.log("User ID:", userId);
+  
   const fetchDeliveries = async () => {
     try {
       const res = await axios.get(
@@ -30,15 +34,15 @@ const MyDeliveries = () => {
   }, []);
 
   const handleAccept = async (orderId) => {
-    try {  
+    try {
       await axios.post(
         "http://localhost:5003/delivery/accept",
-        { orderId },
+        { orderId, deliveryPersonnelId: userId },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       toast.success("Delivery Accepted!");
       fetchDeliveries();
     } catch (error) {
@@ -49,7 +53,6 @@ const MyDeliveries = () => {
       );
     }
   };
-  
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
