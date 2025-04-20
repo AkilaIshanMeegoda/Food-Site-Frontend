@@ -10,7 +10,9 @@ import {
   FaStore,
   FaPlusCircle,
   FaEdit,
-  FaClipboardList
+  FaClipboardList,
+  FaUserPlus,
+  FaCartPlus,
 } from "react-icons/fa";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useLogout } from "../../../hooks/useLogout";
@@ -41,36 +43,76 @@ const Navbar = () => {
   };
 
   // Common links for non-admin users
-  const commonLinks = !user?.role && (
+  // Render common links for guests and when user role is "customer"
+  const commonLinks = (!user || user?.role === "customer") && (
     <>
-      <Link to="/" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaHome /> <span>Home</span>
       </Link>
-      <Link to="/about" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/about"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaInfoCircle /> <span>About</span>
       </Link>
-      <Link to="/contact" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/contact"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaPhone /> <span>Contact</span>
       </Link>
-      <Link to="/menuItems" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/menuItems"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaListAlt /> <span>Menu</span>
       </Link>
-      <Link to="/restaurants" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/order"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
+        <FaCartPlus /> <span>Orders</span>
+      </Link>
+      <Link
+        to="/restaurants"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaStore /> <span>Restaurants</span>
       </Link>
+      {/* Additional "Become a Member" tab for customers */}
+      {user?.role === "customer" && (
+        <Link
+          to="/restaurant-signup"
+          className="flex items-center space-x-1 transition-transform hover:scale-110"
+        >
+          <FaUserPlus /> <span>Become a Member</span>
+        </Link>
+      )}
     </>
   );
 
   // Admin specific links (only shown if user is restaurant_admin)
   const adminLinks = user?.role === "restaurant_admin" && (
     <>
-      <Link to="/restaurant_admin/dashboard/add-item" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/restaurant_admin/dashboard/add-item"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaPlusCircle /> <span>Add Items</span>
       </Link>
-      <Link to="/restaurant_admin/dashboard/manage-items" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/restaurant_admin/dashboard/manage-items"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaEdit /> <span>Manage Items</span>
       </Link>
-      <Link to="/restaurant_admin/dashboard/manage-orders" className="flex items-center space-x-1 transition-transform hover:scale-110">
+      <Link
+        to="/restaurant_admin/dashboard/manage-orders"
+        className="flex items-center space-x-1 transition-transform hover:scale-110"
+      >
         <FaClipboardList /> <span>Manage Orders</span>
       </Link>
     </>
@@ -78,11 +120,17 @@ const Navbar = () => {
 
   // Auth links (login/logout)
   const authLink = user ? (
-    <button onClick={handleLogout} className="flex items-center space-x-1 transition-transform hover:scale-110">
+    <button
+      onClick={handleLogout}
+      className="flex items-center space-x-1 transition-transform hover:scale-110"
+    >
       <FaSignOutAlt /> <span>Logout</span>
     </button>
   ) : (
-    <Link to="/login" className="flex items-center space-x-1 transition-transform hover:scale-110">
+    <Link
+      to="/login"
+      className="flex items-center space-x-1 transition-transform hover:scale-110"
+    >
       <FaSignInAlt /> <span>Login</span>
     </Link>
   );
