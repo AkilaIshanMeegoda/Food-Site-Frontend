@@ -155,8 +155,8 @@ const AddItem = () => {
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
-              name="availability"
-              checked={formData.availability}
+              name="isAvailable"
+              checked={formData.isAvailable}
               onChange={handleCheckboxChange}
             />
             <span>Available</span>
