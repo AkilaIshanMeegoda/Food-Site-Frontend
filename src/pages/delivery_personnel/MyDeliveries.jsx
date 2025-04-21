@@ -3,43 +3,55 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Footer, Navbar } from "flowbite-react";
 import DriverMap from "./../../components/driver/DriverMap";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const MyDeliveries = () => {
   const [deliveries, setDeliveries] = useState([]);
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user?.userId; 
-
-  
-  console.log("Token:", token);
-  console.log("User ID:", userId);
-  
+  const { user } = useAuthContext();
+  console.log("check user", user);
+  // Fetch deliveries function
   const fetchDeliveries = async () => {
+    if (!user || !user.token) return;
+    
     try {
       const res = await axios.get(
         "http://localhost:5003/delivery-personnel/my-deliveries",
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      setDeliveries(res.data);
+      setDeliveries(res.data || []);  // Ensure it defaults to an empty array if data is undefined
     } catch (err) {
-      console.error(err);
+      console.error("Fetch deliveries error:", err);
       toast.error("Failed to load deliveries.");
     }
   };
 
+  // Define all hooks at the top level of your component
   useEffect(() => {
     fetchDeliveries();
-  }, []);
+  }, [user]);
+  
+  // Return early if user or token is not available - AFTER all hooks are defined
+  if (!user || !user.token) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
+        <div className="py-10 px-4 max-w-6xl mx-auto text-center">
+          <p>Please login to see your deliveries.</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
-  const handleAccept = async (orderId) => {
+  const handleAccept = async (orderId, deliveryPersonnelId) => {
     try {
       await axios.post(
         "http://localhost:5003/delivery/accept",
-        { orderId, deliveryPersonnelId: userId },
+        { orderId, deliveryPersonnelId },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${user.token}` },
         }
       );
 
@@ -47,10 +59,7 @@ const MyDeliveries = () => {
       fetchDeliveries();
     } catch (error) {
       toast.error("Failed to accept delivery.");
-      console.error(
-        "Accept delivery error:",
-        error.response?.data || error.message
-      );
+      console.error("Accept delivery error:", error.response?.data || error.message);
     }
   };
 
@@ -60,13 +69,14 @@ const MyDeliveries = () => {
         `http://localhost:5003/delivery/update-status/${orderId}`,
         { status: newStatus },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${user.token}` },
         }
       );
       toast.success("Status updated!");
       fetchDeliveries();
     } catch (error) {
       toast.error("Failed to update status.");
+      console.error("Status update error:", error.response?.data || error.message);
     }
   };
 
@@ -127,7 +137,7 @@ const MyDeliveries = () => {
                       {delivery.status === "pending" ? (
                         <button
                           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
-                          onClick={() => handleAccept(delivery.orderId)}
+                          onClick={() => handleAccept(delivery.orderId, delivery.deliveryPersonnelId)}
                         >
                           Accept
                         </button>
@@ -157,7 +167,7 @@ const MyDeliveries = () => {
           <h3 className="text-xl font-semibold text-center mb-4">
             📍 Real-Time Driver Location
           </h3>
-          <DriverMap userId={userId} />
+          <DriverMap userId={user.userId} />
         </div>
       </div>
       <Footer />
