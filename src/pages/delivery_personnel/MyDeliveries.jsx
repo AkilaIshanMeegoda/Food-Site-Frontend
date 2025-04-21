@@ -7,8 +7,29 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 
 const MyDeliveries = () => {
   const [deliveries, setDeliveries] = useState([]);
+  const [isRegistered, setIsRegistered] = useState(null); // null = loading, true/false = known
   const { user } = useAuthContext();
   console.log("check user", user);
+
+
+  const checkRegistration = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5003/delivery-personnel/profile",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+      setIsRegistered(true);
+    } catch (err) {
+      toast.error("Please register as delivery personnel first.");
+      setIsRegistered(false); // Keep this after toast, but note that it triggers useEffect again
+    }
+  };
+  
+  
+
+
   // Fetch deliveries function
   const fetchDeliveries = async () => {
     if (!user || !user.token) return;
@@ -27,10 +48,18 @@ const MyDeliveries = () => {
     }
   };
 
-  // Define all hooks at the top level of your component
   useEffect(() => {
-    fetchDeliveries();
+    if (user && user.token) {
+      checkRegistration();
+    }
   }, [user]);
+
+  useEffect(() => {
+    if (isRegistered === true) {
+      fetchDeliveries();
+    }
+  }, [isRegistered]);
+  
   
   // Return early if user or token is not available - AFTER all hooks are defined
   if (!user || !user.token) {
