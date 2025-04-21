@@ -2,15 +2,30 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../../components/home/Navbar/Navbar";
+import { useCart } from "../../context/CartContext";
 
 const ItemDetails = () => {
   const { id } = useParams();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const handleAddToCart = () => {
-    toast.success(`${item.name} added to cart!`);
+  const handleAddToCart = (e, item) => {
+     e.stopPropagation();
+        console.log(item)
+        if (!item.isAvailable) return;
+    
+        // Get restaurant info from props or context
+        const restaurantId = item.restaurantId || props.restaurantId;
+        const restaurantName = item.name || "Restaurant";
+    
+        // Add to cart and show success message if successful
+        const success = addToCart(item, restaurantId, restaurantName);
+    
+        if (success) {
+          toast.success(`${item.name} added to cart!`);
+        }
   };
 
   useEffect(() => {
@@ -119,7 +134,7 @@ const ItemDetails = () => {
                      {/* Add to Cart Button */}
                   <button 
                     disabled={!item.isAvailable}
-                    onClick={handleAddToCart}
+                    onClick={(e) => handleAddToCart(e, item)}
                     className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-colors ${
                       item.isAvailable 
                         ? "bg-blue-600 hover:bg-blue-700 text-white"
