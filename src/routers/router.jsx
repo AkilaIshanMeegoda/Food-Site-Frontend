@@ -25,6 +25,7 @@ import Cancel from "../pages/checkout/CancelPage";
 import RestaurantSignUp from "../components/landingPage/RestaurantSignUp.jsx";
 import SuperAdminDashboardLayout from "../pages/super_admin/SuperAdminDashboardLayout.jsx";
 import SuperAdminHome from "../pages/super_admin/SuperAdminHome.jsx";
+import Order from "../pages/customer/Order.jsx";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -68,6 +69,10 @@ function CreateRouter() {
         {
           path: "/restaurant-signup",
           element: <RestaurantSignUp />,
+        },
+        {
+          path: "/order",
+          element: <Order />,
         },
       ],
     },
