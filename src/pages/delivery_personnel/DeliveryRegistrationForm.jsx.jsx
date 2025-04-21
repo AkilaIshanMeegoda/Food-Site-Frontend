@@ -50,7 +50,7 @@ const DeliveryRegistrationForm = () => {
 
       //redirect after short delay or immediately
       setTimeout(() => {
-        navigate("/delivery/dashboard/my-deliveries");
+        navigate("/login");
       }, 1500); // optional delay so user can see the success message
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed"); 

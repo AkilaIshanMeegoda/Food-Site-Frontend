@@ -71,6 +71,10 @@ function CreateRouter() {
           element: <RestaurantSignUp />,
         },
         {
+          path: "/driver-register",
+          element: <DeliveryRegistrationForm />,
+        },
+        {
           path: "/order",
           element: <Order />,
         },
