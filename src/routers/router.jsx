@@ -45,6 +45,7 @@ function CreateRouter() {
         { path: "/login", element: <Login /> },
         { path: "/signup", element: <SignUp /> },
         { path: "/restaurant-signup", element: <RestaurantSignUp /> },
+        { path: "/driver-register", element: <DeliveryRegistrationForm /> },
         { path: "/order", element: <Order /> },
         { path: "/aboutus", element: <AboutUs /> },
         { path: "/contactus", element: <ContactUs /> },

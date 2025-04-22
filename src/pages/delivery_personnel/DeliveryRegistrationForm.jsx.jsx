@@ -10,6 +10,8 @@ import {
 import { Footer, Navbar } from "flowbite-react";
 import homeImage from "../../images/home.jpg";
 import { useNavigate } from "react-router-dom"; // import this
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
 
 const DeliveryRegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -43,14 +45,15 @@ const DeliveryRegistrationForm = () => {
           },
         }
       );
-      setMessage(response.data.message);
+      
+      toast.success(response.data.message || "Registered successfully!"); 
 
       //redirect after short delay or immediately
       setTimeout(() => {
-        navigate("/delivery/dashboard/my-deliveries");
+        navigate("/login");
       }, 1500); // optional delay so user can see the success message
     } catch (error) {
-      setMessage(error.response?.data?.message || "Registration failed");
+      toast.error(error.response?.data?.message || "Registration failed"); 
     }
   };
 

@@ -99,6 +99,19 @@ const Navbar = () => {
         >
           <FaUserPlus className="text-lg" /> <span className="font-medium">Join</span>
         </Link>
+
+        
+      )}
+      {/* Additional "Become Delivery Personnel" tab for customers */}
+      {user?.role === "customer" && (
+        <Link
+          to="/driver-register"
+          className="flex items-center space-x-1 transition-transform hover:scale-110"
+        >
+          <FaUserPlus /> <span>Become a Driver</span>
+        </Link>
+
+        
       )}
     </>
   );
