@@ -4,16 +4,19 @@ import { AuthContextProvider } from "./context/AuthContext";
 import React from "react";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
-import {ToastContainer} from "react-toastify"
-import CreateRouter  from "./routers/router";
+import { ToastContainer } from "react-toastify";
+import CreateRouter from "./routers/router";
+import { CartProvider } from "./context/CartContext";
 
 const router = CreateRouter();
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthContextProvider>
-      <RouterProvider router={router} />
-      <ToastContainer/>
+      <CartProvider>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </CartProvider>
     </AuthContextProvider>
   </React.StrictMode>
-)
+);

@@ -30,7 +30,7 @@ const Home = () => {
               </div>
               <input
                 type="text"
-                placeholder="Drop Your Location"
+                placeholder="Enter restaurant name"
                 className="flex-1 px-2 py-1 text-sm outline-none"
               />
               <button className="px-4 py-1 text-sm font-semibold text-white bg-orange-500 rounded-full hover:bg-orange-600">
