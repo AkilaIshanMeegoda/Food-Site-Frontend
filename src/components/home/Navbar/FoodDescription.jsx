@@ -10,7 +10,7 @@ const FoodDescription = () => {
   const [satisfied, setSatisfied] = useState(2034);
   const [experience, setExperience] = useState(22);
   const [startCounting, setStartCounting] = useState(false);
-  
+
   const ref = useRef(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const FoodDescription = () => {
           setStartCounting(true);
         }
       },
-      { threshold: 0.5 } 
+      { threshold: 0.5 }
     );
 
     if (ref.current) {
@@ -37,7 +37,7 @@ const FoodDescription = () => {
   useEffect(() => {
     if (!startCounting) return;
 
-    const duration = 1500; 
+    const duration = 1500;
     const intervalTime = 50;
     const steps = duration / intervalTime;
 
@@ -51,13 +51,19 @@ const FoodDescription = () => {
     const interval = setInterval(() => {
       count++;
       setFoodDelivered((prev) =>
-        Math.min(targetFoodDelivered, Math.floor(prev + incrementValues.foodDelivered))
+        Math.min(
+          targetFoodDelivered,
+          Math.floor(prev + incrementValues.foodDelivered)
+        )
       );
       setSatisfied((prev) =>
         Math.min(targetSatisfied, Math.floor(prev + incrementValues.satisfied))
       );
       setExperience((prev) =>
-        Math.min(targetExperience, Math.floor(prev + incrementValues.experience))
+        Math.min(
+          targetExperience,
+          Math.floor(prev + incrementValues.experience)
+        )
       );
 
       if (count >= steps) {
@@ -69,36 +75,50 @@ const FoodDescription = () => {
   }, [startCounting]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center justify-between p-10 bg-white md:flex-row">
+    <div
+      ref={ref}
+      className="flex flex-col items-center justify-between px-4 py-8 bg-white sm:px-6 md:flex-row md:px-8 lg:px-12 xl:px-16 gap-8"
+    >
       <div className="relative flex justify-center w-full md:w-1/2">
         <img
           src={diet}
           alt="Healthy Food"
-          className="w-full max-w-md rounded-lg"
+          className="w-full max-w-sm sm:max-w-md lg:max-w-lg rounded-lg  hover:scale-105 transition-transform duration-300"
         />
       </div>
 
-      <div className="w-full mt-8 text-center md:w-1/2 md:mt-0 md:text-left mr-28">
-        <h2 className="text-4xl font-bold text-main-color">
+      <div className="w-full mt-8 text-center md:w-1/2 md:mt-0 md:text-left space-y-6">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-main-color">
           Food Is An Important Part Of A Balanced Diet
         </h2>
-        <p className="mt-4 text-gray-600">
-          A balanced diet provides your body with essential nutrients, vitamins, and minerals 
-          that are crucial for maintaining good health and well-being.
+        <p className="text-sm sm:text-base text-gray-600 max-w-xl">
+          A balanced diet provides your body with essential nutrients, vitamins,
+          and minerals that are crucial for maintaining good health and
+          well-being.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-4 mt-6 md:justify-start">
-          <div className="p-4 text-center bg-gray-100 rounded-lg shadow-md">
-            <h3 className="text-2xl font-bold text-orange-500">{foodDelivered}+</h3>
-            <p className="text-gray-700">Food Delivered</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          <div className="p-4 text-center bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <h3 className="text-xl sm:text-2xl font-bold text-orange-500">
+              {foodDelivered}+
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">Food Delivered</p>
           </div>
-          <div className="p-4 text-center bg-gray-100 rounded-lg shadow-md">
-            <h3 className="text-2xl font-bold text-orange-500">{satisfied}+</h3>
-            <p className="text-gray-700">Satisfied Customers</p>
+          <div className="p-4 text-center bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <h3 className="text-xl sm:text-2xl font-bold text-orange-500">
+              {satisfied}+
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
+              Satisfied Customers
+            </p>
           </div>
-          <div className="p-4 text-center bg-gray-100 rounded-lg shadow-md">
-            <h3 className="text-2xl font-bold text-orange-500">{experience}+</h3>
-            <p className="text-gray-700">Years of Experience</p>
+          <div className="p-4 text-center bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <h3 className="text-xl sm:text-2xl font-bold text-orange-500">
+              {experience}+
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700">
+              Years of Experience
+            </p>
           </div>
         </div>
       </div>

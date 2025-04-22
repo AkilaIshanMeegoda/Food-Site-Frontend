@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Grill from "../../images/grilled.jpg";
-import pepperoniPizza from "../../images/pepperonipizza.jpg"
-import vegBurger from "../../images/vegburger.jpg"
-import cheeseBurger from "../../images/cheeseBurger.jpg"
-import bbqPizza from "../../images/bbq.jpg"
-import friedRice from "../../images/friedRice.jpg"
-import steamedRice from "../../images/steamedRice.jpg"
-import paella from "../../images/paella.jpg"
-import pulao from "../../images/pulao.jpg"
+import pepperoniPizza from "../../images/pepperonipizza.jpg";
+import vegBurger from "../../images/vegburger.jpg";
+import cheeseBurger from "../../images/cheeseBurger.jpg";
+import bbqPizza from "../../images/bbq.jpg";
+import friedRice from "../../images/friedRice.jpg";
+import steamedRice from "../../images/steamedRice.jpg";
+import paella from "../../images/paella.jpg";
+import pulao from "../../images/pulao.jpg";
 
 const categories = [
   { name: "Burgers & Pizza", icon: "🍔", key: "burgers_pizza" },
@@ -95,7 +95,6 @@ const restaurants = {
       price: "Rs.1000",
     },
   ],
-
   rice: [
     {
       name: "Fried Rice",
@@ -128,25 +127,30 @@ const FoodCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState("burgers_pizza");
 
   return (
-    <div className="flex gap-8 p-6 px-60">
-      <div className="w-1/4">
-        <h2 className="text-3xl font-bold ">Quick Pick Top Rated Foods</h2>
-        <hr className="mb-8 border-2 rounded-full border-main-color" />
-        <div className="flex flex-col gap-8">
+    <div className="flex flex-col p-4 md:flex-row md:gap-8 lg:p-6 xl:px-60">
+      {/* Categories Section */}
+      <div className="w-full mb-8 md:w-1/4 md:mb-0">
+        <h2 className="text-2xl font-bold md:text-3xl">
+          Quick Pick Top Rated Foods
+        </h2>
+        <hr className="my-4 border-2 rounded-full border-orange-500 md:mb-8" />
+        
+        {/* Category Buttons - Horizontal scroll on mobile, vertical on desktop */}
+        <div className="flex overflow-x-auto md:flex-col gap-4 md:gap-8 pb-4 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
           {categories.map((category) => (
             <button
               key={category.key}
-              className={`flex items-center justify-left gap-2 px-6 py-6 rounded-full border transition-all ${
+              className={`flex items-center shrink-0 md:shrink justify-left gap-2 px-4 md:mb-4 md:px-6 py-4 md:py-6 rounded-full border transition-all ${
                 selectedCategory === category.key
                   ? "bg-orange-500 text-white"
-                  : "bg-white shadow-lg border-gray-300 hover:shadow-2xl"
+                  : "bg-white shadow-md hover:transform hover:scale-95 "
               }`}
               onClick={() => setSelectedCategory(category.key)}
             >
               <span className="flex items-center justify-center text-lg">
                 {category.icon}
               </span>
-              <span className="flex items-center justify-center font-semibold">
+              <span className="flex items-center justify-center font-semibold whitespace-nowrap">
                 {category.name}
               </span>
             </button>
@@ -154,22 +158,26 @@ const FoodCategory = () => {
         </div>
       </div>
 
-      <div className="grid w-3/4 grid-cols-2 gap-6">
+      {/* Food Grid Section */}
+      <div className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6 md:w-3/4">
         {restaurants[selectedCategory].map((restaurant, index) => (
-          <div key={index} className="p-4 bg-white rounded-lg shadow-lg">
+          <div 
+            key={index} 
+            className="p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+          >
             <img
               src={restaurant.image}
               alt={restaurant.name}
-              className="object-cover w-full rounded-lg h-60"
+              className="object-cover w-full rounded-lg h-48 md:h-60"
             />
-            <h3 className="mt-2 font-semibold text-gray-900">
+            <h3 className="mt-3 text-lg font-semibold text-gray-900">
               {restaurant.name}
             </h3>
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between mt-2">
               <p className="font-semibold text-orange-500">
                 ⭐ {restaurant.rating}
               </p>
-              <p> {restaurant.price}</p>
+              <p className="font-medium text-gray-700">{restaurant.price}</p>
             </div>
           </div>
         ))}
