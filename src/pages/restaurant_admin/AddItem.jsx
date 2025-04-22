@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "flowbite-react";
 import { storage } from "./../../utils/firebaseConfig"; // Your firebase config should export `storage`
+import imageCompression from 'browser-image-compression';
 
 const AddItem = () => {
   const { user } = useAuthContext();
@@ -43,14 +44,31 @@ const AddItem = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
     setUploading(true);
-    const storageRef = storage.ref();
-    const fileRef = storageRef.child(`items/${Date.now()}-${file.name}`);
-
+  
     try {
-      await fileRef.put(file);
+      // Compress the image if larger than 256KB
+      let compressedFile = file;
+      if (file.size > 256 * 1024) {
+        const options = {
+          maxSizeMB: 0.25, // max 256KB
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        compressedFile = await imageCompression(file, options);
+      }
+  
+      const metadata = {
+        contentType: compressedFile.type,
+      };
+  
+      const storageRef = storage.ref();
+      const fileRef = storageRef.child(`items/${Date.now()}-${compressedFile.name}`);
+  
+      await fileRef.put(compressedFile, metadata); // Add metadata to avoid CORS issues
       const downloadURL = await fileRef.getDownloadURL();
+  
       setFormData((prev) => ({ ...prev, image: downloadURL }));
       toast.success("Image uploaded successfully!");
     } catch (error) {
@@ -82,7 +100,7 @@ const AddItem = () => {
 
       if (response.ok) {
         toast.success("Item added successfully!");
-        navigate("/shopOwner/dashboard/view-items");
+        navigate("/restaurant_admin/dashboard/manage-items");
       } else {
         toast.error("Failed to add item.");
       }
