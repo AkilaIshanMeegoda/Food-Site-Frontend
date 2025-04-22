@@ -64,13 +64,13 @@ const Navbar = () => {
         <FaHome /> <span>Home</span>
       </Link>
       <Link
-        to="/about"
+        to="/aboutus"
         className="flex items-center space-x-1 transition-transform hover:scale-110"
       >
         <FaInfoCircle /> <span>About</span>
       </Link>
       <Link
-        to="/contact"
+        to="/contactus"
         className="flex items-center space-x-1 transition-transform hover:scale-110"
       >
         <FaPhone /> <span>Contact</span>
@@ -148,7 +148,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="flex items-center justify-between max-w-screen-xl px-4 py-4 mx-auto text-md">
+      <div className="flex items-center justify-between  px-20 py-4 mx-auto text-md bg-gradient-to-br from-[#FEC6A1] to-[#FDE1D3] w-full">
         <div className="flex items-center space-x-2">
           <FaStore className="text-3xl text-main-color" />
           <span className="text-4xl font-bold text-black">Epic</span>
