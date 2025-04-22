@@ -43,11 +43,10 @@ function CreateRouter() {
         { path: "/login", element: <Login /> },
         { path: "/signup", element: <SignUp /> },
         { path: "/restaurant-signup", element: <RestaurantSignUp /> },
-        { path: "/order", element: <Order /> }, // Public for now, or wrap in customer guard if needed
+        { path: "/order", element: <Order /> },
       ],
     },
 
-    // ✅ Protected Routes for Restaurant Admin
     {
       element: <ProtectedRoute allowedRoles={["restaurant_admin"]} />,
       children: [
@@ -66,7 +65,6 @@ function CreateRouter() {
       ],
     },
 
-    // ✅ Protected Routes for Super Admin
     {
       element: <ProtectedRoute allowedRoles={["super_admin"]} />,
       children: [
@@ -80,9 +78,8 @@ function CreateRouter() {
       ],
     },
 
-    // ✅ Protected Routes for Delivery Personnel
     {
-      element: <ProtectedRoute allowedRoles={["delivery"]} />,
+      element: <ProtectedRoute allowedRoles={["delivery_personnel"]} />,
       children: [
         {
           path: "/delivery/dashboard",
@@ -96,7 +93,6 @@ function CreateRouter() {
       ],
     },
 
-    // ✅ Protected Routes for Customer Checkout
     {
       element: <ProtectedRoute allowedRoles={["customer"]} />,
       children: [
