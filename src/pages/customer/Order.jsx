@@ -15,13 +15,15 @@ import {
   ChevronDown,
   ChevronUp,
   CircleCheck,
-  CircleX
+  CircleX,
 } from "lucide-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router";
+import Navbar from "../../components/home/Navbar/Navbar";
 
 const foodImages = {
-  default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1760&q=80",
+  default:
+    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1760&q=80",
 };
 
 const Order = () => {
@@ -61,7 +63,7 @@ const Order = () => {
         toast.error("Please login to view your orders");
         return;
       }
-      
+
       const response = await axios.get(
         `http://localhost:5002/api/orders/customer/${user.userId}`,
         {
@@ -215,7 +217,7 @@ const Order = () => {
           <p className="mb-6 text-gray-500">
             Add items from the menu to get started with your order
           </p>
-          <button 
+          <button
             onClick={() => navigate("/menuItems")}
             className="px-6 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
           >
@@ -239,26 +241,35 @@ const Order = () => {
                   className="flex items-center p-5 hover:bg-gray-50 transition-colors"
                 >
                   <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
-                    <img 
-                      src={foodImages.default} 
-                      alt={item.name} 
+                    <img
+                      src={foodImages.default}
+                      alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  
+
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900 mb-1">{item.name}</h4>
-                    <p className="text-blue-600 font-semibold">Rs{item.price.toFixed(2)}</p>
+                    <h4 className="font-medium text-gray-900 mb-1">
+                      {item.name}
+                    </h4>
+                    <p className="text-blue-600 font-semibold">
+                      Rs{item.price.toFixed(2)}
+                    </p>
                   </div>
 
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                       <button
-                        onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                        onClick={() =>
+                          updateQuantity(item._id, item.quantity - 1)
+                        }
                         className="p-2 text-gray-500 hover:bg-gray-100 transition-colors"
                         disabled={item.quantity <= 1}
                       >
-                        <Minus size={14} className={item.quantity <= 1 ? "opacity-50" : ""} />
+                        <Minus
+                          size={14}
+                          className={item.quantity <= 1 ? "opacity-50" : ""}
+                        />
                       </button>
 
                       <span className="w-8 text-center text-gray-800 font-medium">
@@ -266,7 +277,9 @@ const Order = () => {
                       </span>
 
                       <button
-                        onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                        onClick={() =>
+                          updateQuantity(item._id, item.quantity + 1)
+                        }
                         className="p-2 text-gray-500 hover:bg-gray-100 transition-colors"
                       >
                         <Plus size={14} />
@@ -374,32 +387,66 @@ const Order = () => {
                       Payment Method
                     </label>
                     <div className="grid grid-cols-2 gap-3 mt-1">
-                      <label className={`flex items-center p-3 ${paymentMethod === "card" 
-                        ? "bg-blue-50 border-blue-200 ring-2 ring-blue-100" 
-                        : "bg-gray-50 border-gray-200"} border rounded-lg cursor-pointer transition-all`}>
+                      <label
+                        className={`flex items-center p-3 ${
+                          paymentMethod === "card"
+                            ? "bg-blue-50 border-blue-200 ring-2 ring-blue-100"
+                            : "bg-gray-50 border-gray-200"
+                        } border rounded-lg cursor-pointer transition-all`}
+                      >
                         <input
                           type="radio"
                           checked={paymentMethod === "card"}
                           onChange={() => setPaymentMethod("card")}
                           className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 hidden"
                         />
-                        <CreditCard className={`mr-3 ${paymentMethod === "card" ? "text-blue-500" : "text-gray-400"}`} size={20} />
-                        <span className={`${paymentMethod === "card" ? "text-blue-700 font-medium" : "text-gray-700"}`}>
+                        <CreditCard
+                          className={`mr-3 ${
+                            paymentMethod === "card"
+                              ? "text-blue-500"
+                              : "text-gray-400"
+                          }`}
+                          size={20}
+                        />
+                        <span
+                          className={`${
+                            paymentMethod === "card"
+                              ? "text-blue-700 font-medium"
+                              : "text-gray-700"
+                          }`}
+                        >
                           Credit/Debit Card
                         </span>
                       </label>
 
-                      <label className={`flex items-center p-3 ${paymentMethod === "cash" 
-                        ? "bg-blue-50 border-blue-200 ring-2 ring-blue-100" 
-                        : "bg-gray-50 border-gray-200"} border rounded-lg cursor-pointer transition-all`}>
+                      <label
+                        className={`flex items-center p-3 ${
+                          paymentMethod === "cash"
+                            ? "bg-blue-50 border-blue-200 ring-2 ring-blue-100"
+                            : "bg-gray-50 border-gray-200"
+                        } border rounded-lg cursor-pointer transition-all`}
+                      >
                         <input
                           type="radio"
                           checked={paymentMethod === "cash"}
                           onChange={() => setPaymentMethod("cash")}
                           className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 hidden"
                         />
-                        <Banknote className={`mr-3 ${paymentMethod === "cash" ? "text-blue-500" : "text-gray-400"}`} size={20} />
-                        <span className={`${paymentMethod === "cash" ? "text-blue-700 font-medium" : "text-gray-700"}`}>
+                        <Banknote
+                          className={`mr-3 ${
+                            paymentMethod === "cash"
+                              ? "text-blue-500"
+                              : "text-gray-400"
+                          }`}
+                          size={20}
+                        />
+                        <span
+                          className={`${
+                            paymentMethod === "cash"
+                              ? "text-blue-700 font-medium"
+                              : "text-gray-700"
+                          }`}
+                        >
                           Cash on Delivery
                         </span>
                       </label>
@@ -417,7 +464,9 @@ const Order = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium text-gray-800">Rs{totalAmount.toFixed(2)}</span>
+                  <span className="font-medium text-gray-800">
+                    Rs{totalAmount.toFixed(2)}
+                  </span>
                 </div>
 
                 <div className="flex justify-between text-sm">
@@ -434,7 +483,9 @@ const Order = () => {
 
                 <div className="pt-3 mt-3 border-t border-dashed border-gray-200">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium text-gray-700">Total Amount</span>
+                    <span className="font-medium text-gray-700">
+                      Total Amount
+                    </span>
                     <span className="text-xl font-bold text-blue-600">
                       Rs{(totalAmount + 150 + totalAmount * 0.05).toFixed(2)}
                     </span>
@@ -457,9 +508,25 @@ const Order = () => {
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Processing...
                   </span>
@@ -470,9 +537,10 @@ const Order = () => {
                   </span>
                 )}
               </button>
-              
+
               <div className="mt-4 text-center text-xs text-gray-500">
-                By placing your order, you agree to our Terms of Service and Privacy Policy
+                By placing your order, you agree to our Terms of Service and
+                Privacy Policy
               </div>
             </div>
           </div>
@@ -501,7 +569,7 @@ const Order = () => {
           <p className="mb-6 text-gray-500">
             Start shopping to create your first order
           </p>
-          <button 
+          <button
             onClick={() => navigate("/")}
             className="px-6 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
           >
@@ -514,14 +582,18 @@ const Order = () => {
             <div
               key={order._id}
               className={`bg-white rounded-xl shadow-sm border ${
-                selectedOrder === order._id 
-                ? "border-blue-200 ring-1 ring-blue-100" 
-                : "border-gray-100 hover:border-gray-200"
+                selectedOrder === order._id
+                  ? "border-blue-200 ring-1 ring-blue-100"
+                  : "border-gray-100 hover:border-gray-200"
               } overflow-hidden transition-all duration-200`}
             >
-              <div 
+              <div
                 className="flex items-center justify-between p-5 cursor-pointer"
-                onClick={() => setSelectedOrder(selectedOrder === order._id ? null : order._id)}
+                onClick={() =>
+                  setSelectedOrder(
+                    selectedOrder === order._id ? null : order._id
+                  )
+                }
               >
                 <div className="flex items-center">
                   <div className="mr-4">
@@ -561,29 +633,41 @@ const Order = () => {
                       <div className="space-y-2 text-sm">
                         <p className="flex justify-between">
                           <span className="text-gray-500">Restaurant:</span>
-                          <span className="font-medium text-gray-800">{order.restaurantName}</span>
+                          <span className="font-medium text-gray-800">
+                            {order.restaurantName}
+                          </span>
                         </p>
                         <p className="flex justify-between">
-                          <span className="text-gray-500">Delivery Address:</span>
-                          <span className="font-medium text-gray-800">{order.deliveryAddress}</span>
+                          <span className="text-gray-500">
+                            Delivery Address:
+                          </span>
+                          <span className="font-medium text-gray-800">
+                            {order.deliveryAddress}
+                          </span>
                         </p>
                         {order.deliveryInstructions && (
                           <p className="flex justify-between">
                             <span className="text-gray-500">Instructions:</span>
-                            <span className="font-medium text-gray-800">{order.deliveryInstructions}</span>
+                            <span className="font-medium text-gray-800">
+                              {order.deliveryInstructions}
+                            </span>
                           </p>
                         )}
                         <p className="flex justify-between">
                           <span className="text-gray-500">Payment Method:</span>
-                          <span className="font-medium text-gray-800 capitalize">{order.paymentMethod}</span>
+                          <span className="font-medium text-gray-800 capitalize">
+                            {order.paymentMethod}
+                          </span>
                         </p>
                         <p className="flex justify-between">
                           <span className="text-gray-500">Payment Status:</span>
-                          <span className={`font-medium ${
-                            order.paymentStatus === "paid" 
-                              ? "text-green-600" 
-                              : "text-amber-600"
-                          } capitalize`}>
+                          <span
+                            className={`font-medium ${
+                              order.paymentStatus === "paid"
+                                ? "text-green-600"
+                                : "text-amber-600"
+                            } capitalize`}
+                          >
                             {order.paymentStatus}
                           </span>
                         </p>
@@ -599,11 +683,15 @@ const Order = () => {
                           <div
                             key={index}
                             className={`flex justify-between py-2 ${
-                              index !== order.items.length - 1 ? "border-b border-gray-100" : ""
+                              index !== order.items.length - 1
+                                ? "border-b border-gray-100"
+                                : ""
                             }`}
                           >
                             <div className="flex-1">
-                              <p className="font-medium text-gray-800">{item.name}</p>
+                              <p className="font-medium text-gray-800">
+                                {item.name}
+                              </p>
                               <p className="text-xs text-gray-500">
                                 Rs{item.price} x {item.quantity}
                               </p>
@@ -619,7 +707,9 @@ const Order = () => {
 
                   <div className="mt-6 pt-4 border-t border-gray-200">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700 font-medium">Total Amount</span>
+                      <span className="text-gray-700 font-medium">
+                        Total Amount
+                      </span>
                       <span className="text-xl font-bold text-blue-600">
                         Rs{order.totalAmount.toFixed(2)}
                       </span>
@@ -640,45 +730,49 @@ const Order = () => {
   );
 
   return (
-    <div className="max-w-5xl px-4 py-10 mx-auto">
-      <button
-        onClick={() => navigate("/")}
-        className="flex items-center mb-6 text-blue-600 hover:text-blue-800 transition-colors"
-      >
-        <ArrowLeft className="mr-2" size={18} /> Back to Home
-      </button>
-      
-      <div className="flex mb-8 border-b border-gray-200">
+    <div>
+      <Navbar />
+      <div className="max-w-5xl px-4 py-10 mx-auto">
         <button
-          className={`py-3 px-6 font-medium relative ${
-            activeTab === "cart"
-              ? "text-blue-600 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          onClick={() => setActiveTab("cart")}
+          onClick={() => navigate("/")}
+          className="flex items-center mb-6 text-blue-600 hover:text-blue-800 transition-colors"
         >
-          <span className="flex items-center">
-            Cart {itemCount > 0 && (
-              <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-600 rounded-full">
-                {itemCount}
-              </span>
-            )}
-          </span>
+          <ArrowLeft className="mr-2" size={18} /> Back to Home
         </button>
 
-        <button
-          className={`py-3 px-6 font-medium relative ${
-            activeTab === "orders"
-              ? "text-blue-600 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          onClick={() => setActiveTab("orders")}
-        >
-          My Orders
-        </button>
+        <div className="flex mb-8 border-b border-gray-200">
+          <button
+            className={`py-3 px-6 font-medium relative ${
+              activeTab === "cart"
+                ? "text-blue-600 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("cart")}
+          >
+            <span className="flex items-center">
+              Cart{" "}
+              {itemCount > 0 && (
+                <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-600 rounded-full">
+                  {itemCount}
+                </span>
+              )}
+            </span>
+          </button>
+
+          <button
+            className={`py-3 px-6 font-medium relative ${
+              activeTab === "orders"
+                ? "text-blue-600 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("orders")}
+          >
+            My Orders
+          </button>
+        </div>
+
+        {activeTab === "cart" ? renderCartTab() : renderOrdersTab()}
       </div>
-
-      {activeTab === "cart" ? renderCartTab() : renderOrdersTab()}
     </div>
   );
 };

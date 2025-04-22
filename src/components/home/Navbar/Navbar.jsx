@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FaHome,
   FaInfoCircle,
@@ -20,6 +20,8 @@ import { useAuthContext } from "../../../hooks/useAuthContext";
 import { toast } from "react-toastify";
 
 const Navbar = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
   const [mobileMenu, setMobileMenu] = useState(false);
   const navigate = useNavigate();
   const { logout } = useLogout();
@@ -33,7 +35,6 @@ const Navbar = () => {
   };
 
   const handleClick = () => {
-
     if (!user) {
       navigate("/login");
     } else if (user.role === "customer") {
@@ -148,7 +149,13 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="flex items-center justify-between  px-20 py-4 mx-auto text-md bg-gradient-to-br from-[#FEC6A1] to-[#FDE1D3] w-full">
+      <div
+        className={`flex items-center justify-between px-20 py-4 mx-auto text-md w-full ${
+          isHomePage
+            ? ""
+            : "bg-gradient-to-br from-[#FEC6A1] to-[#FDE1D3]"
+        }`}
+      >
         <div className="flex items-center space-x-2">
           <FaStore className="text-3xl text-main-color" />
           <span className="text-4xl font-bold text-black">Epic</span>
