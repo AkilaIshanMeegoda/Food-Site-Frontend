@@ -32,6 +32,17 @@ const Navbar = () => {
     });
   };
 
+  const handleClick = () => {
+
+    if (!user) {
+      navigate("/login");
+    } else if (user.role === "customer") {
+      navigate("/order");
+    } else {
+      alert("Access denied: Only customers can view orders.");
+    }
+  };
+
   const handleLogout = () => {
     logout();
     showSuccess();
@@ -70,12 +81,12 @@ const Navbar = () => {
       >
         <FaListAlt /> <span>Menu</span>
       </Link>
-      <Link
-        to="/order"
+      <button
+        onClick={handleClick}
         className="flex items-center space-x-1 transition-transform hover:scale-110"
       >
         <FaCartPlus /> <span>Orders</span>
-      </Link>
+      </button>
       <Link
         to="/restaurants"
         className="flex items-center space-x-1 transition-transform hover:scale-110"
