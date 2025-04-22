@@ -26,6 +26,7 @@ const UpdateItem = () => {
     "Drinks",
     "Dessert",
     "Fried Rice",
+    "BBQ",
   ];
 
   useEffect(() => {
