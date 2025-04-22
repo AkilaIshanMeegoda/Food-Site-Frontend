@@ -147,7 +147,7 @@ const ViewItemDetails = () => {
                 <p className="text-gray-700">{item.description || "No description available"}</p>
               </div>
 
-              {user?.role === "restaurant_admin" && (
+              {/* {user?.role === "restaurant_admin" && (
                 <div className="flex space-x-4 mt-6">
                   <button
                     onClick={() => navigate(`/update-item/${id}`)}
@@ -162,7 +162,7 @@ const ViewItemDetails = () => {
                     <FaTrash className="mr-2" /> Delete Item
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
