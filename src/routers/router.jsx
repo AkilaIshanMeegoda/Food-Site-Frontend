@@ -52,7 +52,7 @@ function CreateRouter() {
         { path: "/order", element: <Order /> },
         { path: "/aboutus", element: <AboutUs /> },
         { path: "/contactus", element: <ContactUs /> },
-        { path:"/track-order/:orderId", element: <TrackOrder /> }
+        { path:"/track-order/:orderId", element: <TrackOrder /> },
         { path: "/join", element: <Join /> },
       ],
     },
