@@ -717,9 +717,12 @@ const Order = () => {
                       </span>
                     </div>
                     <div className="mt-4 text-right">
-                      <button className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                        Track Order
-                      </button>
+                    <button 
+  onClick={() => navigate(`/track-order/${order._id}`)}
+  className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+>
+  Track Order
+</button>
                     </div>
                   </div>
                 </div>
