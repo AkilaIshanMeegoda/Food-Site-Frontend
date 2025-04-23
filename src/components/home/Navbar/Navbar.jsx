@@ -146,6 +146,27 @@ const Navbar = () => {
     </div>
   );
 
+  // Super Admin specific links (only shown if user is super_admin)
+const superAdminLinks = user?.role === "super_admin" && (
+  <div className="flex items-center space-x-4 whitespace-nowrap">
+    <Link
+      to="/super_admin/dashboard/home"
+      className="flex items-center gap-2 p-2 hover:scale-110 rounded-lg transition-all"
+    >
+      <FaThLarge className="text-lg" />
+      <span className="font-medium">Dashboard</span>
+    </Link>
+    <Link
+      to="/super_admin/dashboard/manage-restaurants"
+      className="flex items-center gap-2 p-2 hover:scale-110 rounded-lg transition-all"
+    >
+      <FaStore className="text-lg" />
+      <span className="font-medium">Manage Restaurants</span>
+    </Link>
+  </div>
+);
+
+
   // Auth links (login/logout)
   const authLink = user ? (
     <button
@@ -185,9 +206,14 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-2">
-          {user?.role === "restaurant_admin" ? adminLinks : commonLinks}
+          {user?.role === "restaurant_admin"
+            ? adminLinks
+            : user?.role === "super_admin"
+            ? superAdminLinks
+            : commonLinks}
           {authLink}
         </div>
+
 
         {/* Mobile Menu Button */}
         <button
