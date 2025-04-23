@@ -13,6 +13,7 @@ import {
   FaClipboardList,
   FaUserPlus,
   FaCartPlus,
+  FaThLarge,
 } from "react-icons/fa";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useLogout } from "../../../hooks/useLogout";
@@ -114,6 +115,13 @@ const Navbar = () => {
   // Admin specific links (only shown if user is restaurant_admin)
   const adminLinks = user?.role === "restaurant_admin" && (
     <div className="flex items-center space-x-4 whitespace-nowrap">
+      <Link
+        to="/restaurant_admin/dashboard/home"
+        className="flex items-center gap-2 p-2 hover:scale-110 rounded-lg transition-all"
+      >
+        <FaThLarge className="text-lg" />{" "}
+        <span className="font-medium">Dash Board</span>
+      </Link>
       <Link
         to="/restaurant_admin/dashboard/add-item"
         className="flex items-center gap-2 p-2 hover:scale-110 rounded-lg transition-all"
