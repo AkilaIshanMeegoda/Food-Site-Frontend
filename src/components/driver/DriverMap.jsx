@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css";
 // Fix Leaflet marker icon paths
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 
+  iconRetinaUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -26,114 +26,98 @@ const BACKEND_URL = "http://localhost:5003";
 const RecenterMap = ({ lat, lng }) => {
   const map = useMap();
   useEffect(() => {
-    console.log("📍 RecenterMap triggered. New center:", lat, lng);
-    map.setView([lat, lng], 15);
+    if (lat && lng) {
+      console.log("📍 RecenterMap triggered. New center:", lat, lng);
+      map.setView([lat, lng], 15);
+    }
   }, [lat, lng, map]);
   return null;
 };
 
 const DriverMap = () => {
   const [driverLocation, setDriverLocation] = useState(null);
+  const [socketInstance, setSocketInstance] = useState(null);
   const [error, setError] = useState(null);
+
   const defaultCenter = [6.9271, 79.8612]; // Colombo
 
   useEffect(() => {
-    console.log("Connecting to backend socket:", BACKEND_URL);
     const socket = io(BACKEND_URL);
+    setSocketInstance(socket);
 
     socket.on("connect", () => {
-      console.log("Socket connected! ID:", socket.id);
+      console.log("✅ Socket connected! ID:", socket.id);
+      socket.emit("registerDriver", { userId: socket.id });
     });
 
     socket.on("driverLocation", (data) => {
-      console.log("Received driverLocation:", data);
-
-      // Validate data structure
-      if (
-        !data ||
-        typeof data.lat !== "number" ||
-        typeof data.lng !== "number"
-      ) {
-        console.error("Invalid driverLocation payload:", data);
-        return;
+      if (data.userId === socket.id) {
+        console.log("📡 Updating driver's location:", data);
+        setDriverLocation({
+          lat: data.lat,
+          lng: data.lng,
+          userId: data.userId,
+          lastUpdated: new Date(data.timestamp),
+        });
       }
-
-      const updatedLocation = {
-        lat: data.lat,
-        lng: data.lng,
-        userId: data.userId || "Unknown",
-        lastUpdated: new Date()
-      };
-
-      console.log(`Location update -> Lat: ${updatedLocation.lat}, Lng: ${updatedLocation.lng}, User: ${updatedLocation.userId}`);
-      setDriverLocation(updatedLocation);
     });
 
     socket.on("connect_error", (err) => {
-      console.error("Socket connection error:", err.message);
+      console.error("❌ Socket connection error:", err.message);
+      setError("Socket connection error");
     });
 
-    // Request geolocation permission and fetch the user's current position
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+    // Geolocation tracking
+    if ("geolocation" in navigator) {
+      const watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          console.log("Driver's current position:", latitude, longitude);
-          // Emit the location to the backend
-          socket.emit("locationUpdate", {
-            userId: socket.id, // Send unique userId from socket
-            lat: latitude,
-            lng: longitude
-          });
-          setDriverLocation({
-            lat: latitude,
-            lng: longitude,
-            userId: socket.id,
-            lastUpdated: new Date()
-          });
-        },
-        (err) => {
-          setError("Geolocation permission denied or failed");
-          console.error("Geolocation error:", err.message);
-        }
-      );
+          console.log("📍 Position updated:", latitude, longitude);
 
-      // Watch for location changes (real-time tracking)
-      navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log("Driver's current position updated:", latitude, longitude);
-          // Emit the updated location to the backend
           socket.emit("locationUpdate", {
-            userId: socket.id, // Send unique userId from socket
+            userId: socket.id,
             lat: latitude,
-            lng: longitude
+            lng: longitude,
           });
+
           setDriverLocation({
             lat: latitude,
             lng: longitude,
             userId: socket.id,
-            lastUpdated: new Date()
+            lastUpdated: new Date(),
           });
         },
         (err) => {
-          setError("Geolocation permission denied or failed");
-          console.error("Geolocation watch error:", err.message);
+          console.error("❌ Geolocation tracking failed:", err.message);
+          switch (err.code) {
+            case err.PERMISSION_DENIED:
+              setError("Permission denied for Geolocation");
+              break;
+            case err.POSITION_UNAVAILABLE:
+              setError("Position unavailable");
+              break;
+            case err.TIMEOUT:
+              setError("Geolocation timeout");
+              break;
+            default:
+              setError("Geolocation tracking failed");
+              break;
+          }
         },
         {
           enableHighAccuracy: true,
-          maximumAge: 10000,
-          timeout: 30000
+          timeout: 10000,
+          maximumAge: 0,
         }
       );
+
+      return () => {
+        navigator.geolocation.clearWatch(watchId);
+        socket.disconnect();
+      };
     } else {
       setError("Geolocation is not supported by this browser.");
     }
-
-    return () => {
-      console.log("Disconnecting socket...");
-      socket.disconnect();
-    };
   }, []);
 
   return (
@@ -153,25 +137,9 @@ const DriverMap = () => {
             attribution="&copy; OpenStreetMap contributors"
           />
 
-          <CircleMarker
-            center={defaultCenter}
-            radius={10}
-            pathOptions={{
-              fillColor: "blue",
-              color: "darkblue",
-              weight: 2,
-              fillOpacity: 0.8
-            }}
-          >
-            <Popup>Static Default Marker (Colombo)</Popup>
-          </CircleMarker>
-
           {driverLocation && (
             <>
-              <RecenterMap
-                lat={driverLocation.lat}
-                lng={driverLocation.lng}
-              />
+              <RecenterMap lat={driverLocation.lat} lng={driverLocation.lng} />
               <CircleMarker
                 center={[driverLocation.lat, driverLocation.lng]}
                 radius={12}
@@ -179,7 +147,7 @@ const DriverMap = () => {
                   fillColor: "#ff0000",
                   color: "#aa0000",
                   weight: 3,
-                  fillOpacity: 0.9
+                  fillOpacity: 0.9,
                 }}
               >
                 <Popup>
@@ -193,7 +161,9 @@ const DriverMap = () => {
           )}
         </MapContainer>
       </div>
-      {error && <div className="text-red-500">{error}</div>}
+      {error && (
+        <div className="text-red-500 font-medium mt-4">⚠️ {error}</div>
+      )}
     </div>
   );
 };

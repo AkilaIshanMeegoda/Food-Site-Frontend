@@ -27,6 +27,11 @@ import RestaurantSignUp from "../components/landingPage/RestaurantSignUp.jsx";
 import SuperAdminDashboardLayout from "../pages/super_admin/SuperAdminDashboardLayout.jsx";
 import SuperAdminHome from "../pages/super_admin/SuperAdminHome.jsx";
 import Order from "../pages/customer/Order.jsx";
+import AboutUs from "../components/home/AboutUs.jsx";
+import ContactUs from "../components/home/ContactUs.jsx";
+import TrackOrder from "../components/orders/TrackOrder.jsx";
+import Join from "../components/home/Join.jsx";
+
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -43,7 +48,12 @@ function CreateRouter() {
         { path: "/login", element: <Login /> },
         { path: "/signup", element: <SignUp /> },
         { path: "/restaurant-signup", element: <RestaurantSignUp /> },
+        { path: "/driver-register", element: <DeliveryRegistrationForm /> },
         { path: "/order", element: <Order /> },
+        { path: "/aboutus", element: <AboutUs /> },
+        { path: "/contactus", element: <ContactUs /> },
+        { path:"/track-order/:orderId", element: <TrackOrder /> },
+        { path: "/join", element: <Join /> },
       ],
     },
 
