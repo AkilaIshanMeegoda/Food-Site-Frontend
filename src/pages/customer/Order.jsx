@@ -51,8 +51,10 @@ const Order = () => {
 
   // Fetch user's orders on component mount
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (user?.userId) {
+      fetchOrders();
+    }
+  }, [user?.userId]);
 
   const fetchOrders = async () => {
     try {

@@ -7,11 +7,12 @@ import {
   FaMapMarkerAlt,
   FaIdCard,
 } from "react-icons/fa";
-import { Footer, Navbar } from "flowbite-react";
-import homeImage from "../../images/home.jpg";
+import { Footer } from "flowbite-react";
+import homeImage from "../../images/delivery.jpg";
 import { useNavigate } from "react-router-dom"; // import this
-import { ToastContainer, toast } from "react-toastify"; 
-import "react-toastify/dist/ReactToastify.css"; 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Navbar from "../../components/home/Navbar/Navbar";
 
 const DeliveryRegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -45,15 +46,15 @@ const DeliveryRegistrationForm = () => {
           },
         }
       );
-      
-      toast.success(response.data.message || "Registered successfully!"); 
+
+      toast.success(response.data.message || "Registered successfully!");
 
       //redirect after short delay or immediately
       setTimeout(() => {
         navigate("/login");
       }, 1500); // optional delay so user can see the success message
     } catch (error) {
-      toast.error(error.response?.data?.message || "Registration failed"); 
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -75,12 +76,12 @@ const DeliveryRegistrationForm = () => {
 
   return (
     <div>
+      <Navbar />
       <div
-        className="min-h-screen bg-cover bg-center relative"
+        className="min-h-screen bg-cover  relative"
         style={{ backgroundImage: `url(${homeImage})` }}
       >
-        <Navbar />
-        <div className="flex justify-center items-center min-h-screen bg-black/40 px-4">
+        <div className="flex justify-center items-center min-h-screen bg-black/40 ">
           <form
             onSubmit={handleSubmit}
             className="bg-white bg-opacity-95 p-10 rounded-3xl shadow-xl w-full max-w-lg"

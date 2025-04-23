@@ -30,6 +30,8 @@ import Order from "../pages/customer/Order.jsx";
 import AboutUs from "../components/home/AboutUs.jsx";
 import ContactUs from "../components/home/ContactUs.jsx";
 import TrackOrder from "../components/orders/TrackOrder.jsx";
+import Join from "../components/home/Join.jsx";
+
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -50,7 +52,8 @@ function CreateRouter() {
         { path: "/order", element: <Order /> },
         { path: "/aboutus", element: <AboutUs /> },
         { path: "/contactus", element: <ContactUs /> },
-        {path:"/track-order/:orderId", element: <TrackOrder />}
+        { path:"/track-order/:orderId", element: <TrackOrder /> }
+        { path: "/join", element: <Join /> },
       ],
     },
 
