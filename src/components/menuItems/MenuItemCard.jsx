@@ -3,24 +3,32 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useNavigate } from "react-router";
 
 const MenuItemCard = ({ item, onCardClick }) => {
+  const navigate = useNavigate();
+  const { user } = useAuthContext();
   const { addToCart } = useCart();
 
   const handleAddToCart = (e, item) => {
     e.stopPropagation();
-    console.log(item)
+    console.log(item);
+
     if (!item.isAvailable) return;
 
-    // Get restaurant info from props or context
     const restaurantId = item.restaurantId || props.restaurantId;
     const restaurantName = item.name || "Restaurant";
 
-    // Add to cart and show success message if successful
-    const success = addToCart(item, restaurantId, restaurantName);
+    if (!user || user.role !== "customer") {
+      toast.error("Please login to add items to cart.");
+      navigate("/login");
+    } else {
+      const success = addToCart(item, restaurantId, restaurantName);
 
-    if (success) {
-      toast.success(`${item.name} added to cart!`);
+      if (success) {
+        toast.success(`${item.name} added to cart!`);
+      }
     }
   };
 
