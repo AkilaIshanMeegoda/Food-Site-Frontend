@@ -15,7 +15,9 @@ const RestaurantItems = () => {
     try {
       const response = await fetch(`http://localhost:5001/api/public/restaurants/${id}/menu-items`);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorResponse = await response.json();
+        console.log("check error response", errorResponse);
+        throw new Error(errorResponse.error || `HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
       const itemsData = result.data || result;
