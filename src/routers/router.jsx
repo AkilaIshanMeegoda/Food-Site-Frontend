@@ -29,6 +29,7 @@ import SuperAdminHome from "../pages/super_admin/SuperAdminHome.jsx";
 import Order from "../pages/customer/Order.jsx";
 import AboutUs from "../components/home/AboutUs.jsx";
 import ContactUs from "../components/home/ContactUs.jsx";
+import TrackOrder from "../components/orders/TrackOrder.jsx";
 
 function CreateRouter() {
   return createBrowserRouter([
@@ -49,6 +50,7 @@ function CreateRouter() {
         { path: "/order", element: <Order /> },
         { path: "/aboutus", element: <AboutUs /> },
         { path: "/contactus", element: <ContactUs /> },
+        {path:"/track-order/:orderId", element: <TrackOrder />}
       ],
     },
 
