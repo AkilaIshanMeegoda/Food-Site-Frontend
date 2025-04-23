@@ -34,7 +34,7 @@ const RecenterMap = ({ lat, lng }) => {
   return null;
 };
 
-const DriverMap = () => {
+const DriverMap = ({ orderId }) => {
   const [driverLocation, setDriverLocation] = useState(null);
   const [socketInstance, setSocketInstance] = useState(null);
   const [error, setError] = useState(null);
@@ -78,6 +78,7 @@ const DriverMap = () => {
             userId: socket.id,
             lat: latitude,
             lng: longitude,
+            orderId: orderId,
           });
 
           setDriverLocation({

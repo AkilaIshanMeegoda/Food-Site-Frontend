@@ -102,6 +102,10 @@ const MyDeliveries = () => {
     }
   };
 
+  const acceptedDelivery = deliveries.find(
+    (d) => d.status === "accepted" || d.status === "picked_up" || d.status === "on_the_way"
+  );
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -167,12 +171,17 @@ const MyDeliveries = () => {
           </div>
         )}
 
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold text-center mb-4">
-            📍 Real-Time Driver Location
-          </h3>
-          <DriverMap userId={user.userId} />
-        </div>
+       {acceptedDelivery && (
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold text-center mb-4">
+              📍 Real-Time Driver Location
+            </h3>
+            <DriverMap
+              userId={user.userId}
+              orderId={acceptedDelivery.orderId}
+            />
+          </div>
+        )}
       </div>
       <Footer />
     </div>
