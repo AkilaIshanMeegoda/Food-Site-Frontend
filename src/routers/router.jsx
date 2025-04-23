@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import ProtectedRoute from "../utils/ProtectedRoute";
 import Home from "../components/home/Home";
 import App from "../App";
 import Login from "../components/landingPage/ClientLogin";
@@ -26,110 +27,96 @@ import RestaurantSignUp from "../components/landingPage/RestaurantSignUp.jsx";
 import SuperAdminDashboardLayout from "../pages/super_admin/SuperAdminDashboardLayout.jsx";
 import SuperAdminHome from "../pages/super_admin/SuperAdminHome.jsx";
 import Order from "../pages/customer/Order.jsx";
+import AboutUs from "../components/home/AboutUs.jsx";
+import ContactUs from "../components/home/ContactUs.jsx";
+import TrackOrder from "../components/orders/TrackOrder.jsx";
+import Join from "../components/home/Join.jsx";
+
 
 function CreateRouter() {
   return createBrowserRouter([
-    /*home routes*/
     {
       path: "/",
       element: <App />,
       children: [
+        { path: "/", element: <Home /> },
+        { path: "/menuItems", element: <MenuItems /> },
+        { path: "/view-menuItem/:id", element: <ItemDetails /> },
+        { path: "/restaurants", element: <Restaurants /> },
+        { path: "/restaurants-all-items/:id", element: <RestaurantItems /> },
+        { path: "/category-items/:category", element: <CategoryItems /> },
+        { path: "/login", element: <Login /> },
+        { path: "/signup", element: <SignUp /> },
+        { path: "/restaurant-signup", element: <RestaurantSignUp /> },
+        { path: "/driver-register", element: <DeliveryRegistrationForm /> },
+        { path: "/order", element: <Order /> },
+        { path: "/aboutus", element: <AboutUs /> },
+        { path: "/contactus", element: <ContactUs /> },
+        { path:"/track-order/:orderId", element: <TrackOrder /> },
+        { path: "/join", element: <Join /> },
+      ],
+    },
+
+    {
+      element: <ProtectedRoute allowedRoles={["restaurant_admin"]} />,
+      children: [
         {
-          path: "/",
-          element: <Home />,
-        },
-        {
-          path: "/menuItems",
-          element: <MenuItems />,
-        },
-        {
-          path: "/view-menuItem/:id",
-          element: <ItemDetails />,
-        },
-        {
-          path: "/restaurants",
-          element: <Restaurants />,
-        },
-        {
-          path: "/restaurants-all-items/:id",
-          element: <RestaurantItems />,
-        },
-        {
-          path: "/category-items/:category",
-          element: <CategoryItems />,
-        },
-        {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "/signup",
-          element: <SignUp />,
-        },
-        {
-          path: "/restaurant-signup",
-          element: <RestaurantSignUp />,
-        },
-        {
-          path: "/order",
-          element: <Order />,
+          path: "/restaurant_admin/dashboard",
+          element: <AdminDashboardLayout />,
+          children: [
+            { path: "home", element: <Admin_Home /> },
+            { path: "manage-items", element: <ManageItems /> },
+            { path: "manage-orders", element: <ManageOrders /> },
+            { path: "add-item", element: <AddItem /> },
+            { path: "view-item/:id", element: <ViewItemDetails /> },
+            { path: "update-item/:id", element: <UpdateItem /> },
+          ],
         },
       ],
     },
+
     {
-      path: "/restaurant_admin/dashboard",
-      element: <AdminDashboardLayout />,
+      element: <ProtectedRoute allowedRoles={["super_admin"]} />,
       children: [
-        { path: "/restaurant_admin/dashboard/home", element: <Admin_Home /> },
-        { 
-          path: "/restaurant_admin/dashboard/manage-items", 
-          element: <ManageItems /> 
-        },
-        { 
-          path: "/restaurant_admin/dashboard/manage-orders", 
-          element: <ManageOrders /> 
-        },
-        { 
-          path: "/restaurant_admin/dashboard/add-item", 
-          element: <AddItem /> 
-        },
-        { 
-          path: "/restaurant_admin/dashboard/view-item/:id", 
-          element: <ViewItemDetails /> 
-        },
-        { 
-          path: "/restaurant_admin/dashboard/update-item/:id", 
-          element: <UpdateItem /> 
+        {
+          path: "/super_admin/dashboard",
+          element: <SuperAdminDashboardLayout />,
+          children: [
+            { path: "home", element: <SuperAdminHome /> },
+          ],
         },
       ],
     },
+
     {
-      path: "/super_admin/dashboard",
-      element: <SuperAdminDashboardLayout />,
+      element: <ProtectedRoute allowedRoles={["delivery_personnel"]} />,
       children: [
-        { 
-          path: "/super_admin/dashboard/home", 
-          element: <SuperAdminHome /> 
+        {
+          path: "/delivery/dashboard",
+          element: <DeliveryDashboardLayout />,
+          children: [
+            { path: "home", element: <Delivery_Home /> },
+            { path: "register", element: <DeliveryRegistrationForm /> },
+            { path: "my-deliveries", element: <MyDeliveries /> },
+          ],
         },
       ],
     },
+
     {
-      path: "/delivery/dashboard",
-      element: <DeliveryDashboardLayout />,
+      element: <ProtectedRoute allowedRoles={["customer"]} />,
       children: [
-        { path: "/delivery/dashboard/home", element: <Delivery_Home /> },
-        { path: "/delivery/dashboard/register", element: <DeliveryRegistrationForm /> },
-        { path: "/delivery/dashboard/my-deliveries", element: <MyDeliveries /> },
+        {
+          path: "/checkout",
+          element: <CheckoutLayout />,
+          children: [
+            { path: "success", element: <Success /> },
+            { path: "cancel", element: <Cancel /> },
+          ],
+        },
       ],
     },
-    {
-      path: "/checkout",
-      element: <CheckoutLayout />,
-      children: [
-        { path: "/checkout/success", element: <Success /> },
-        { path: "/checkout/cancel", element: <Cancel /> },
-      ]
-    }
   ]);
 }
+
 export default CreateRouter;

@@ -6,9 +6,7 @@ import { Footer, Navbar } from "flowbite-react";
 const Delivery_Home = () => {
   const navigate = useNavigate();
 
-  const handleRegister = () => {
-    navigate("/delivery/dashboard/register");
-  };
+
 
   const handleDashboard = () => {
     navigate("/delivery/dashboard/my-deliveries");
@@ -16,11 +14,11 @@ const Delivery_Home = () => {
 
   return (
     <div>
+      <Navbar />
       <div
         className="min-h-screen bg-cover bg-center relative"
         style={{ backgroundImage: `url(${homeImage})` }}
       >
-        <Navbar />
         <div className="flex justify-center items-center min-h-screen bg-black/40">
           <div className="bg-white bg-opacity-95 p-10 rounded-3xl shadow-xl text-center w-full max-w-xl">
             <h1 className="text-4xl font-bold text-orange-500 mb-6">
@@ -32,12 +30,7 @@ const Delivery_Home = () => {
             </p>
 
             <div className="flex flex-col gap-5">
-              <button
-                onClick={handleRegister}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-full transition duration-200"
-              >
-                Register as Delivery Driver
-              </button>
+              
               <button
                 onClick={handleDashboard}
                 className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 rounded-full transition duration-200"

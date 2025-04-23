@@ -14,7 +14,7 @@ export const useSignUp = () => {
     setIsLoading(true);
     setError(null);
     const showSuccess = () => {
-      toast.success('Successfully Login!',{
+      toast.success('Successfully Sign Up. Please Login!',{
         position: "bottom-right",
         theme: "colored",
       });
@@ -32,10 +32,8 @@ export const useSignUp = () => {
       setError(json.error);
     }
     if (response.ok) {
-      localStorage.setItem("user", JSON.stringify(json));
-      dispatch({ type: "LOGIN", payload: json });
       setIsLoading(false);
-        navigate("/")
+        navigate("/login")
         showSuccess()
       
       
