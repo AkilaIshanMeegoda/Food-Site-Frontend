@@ -14,11 +14,11 @@ const Delivery_Home = () => {
 
   return (
     <div>
+      <Navbar />
       <div
         className="min-h-screen bg-cover bg-center relative"
         style={{ backgroundImage: `url(${homeImage})` }}
       >
-        <Navbar />
         <div className="flex justify-center items-center min-h-screen bg-black/40">
           <div className="bg-white bg-opacity-95 p-10 rounded-3xl shadow-xl text-center w-full max-w-xl">
             <h1 className="text-4xl font-bold text-orange-500 mb-6">
