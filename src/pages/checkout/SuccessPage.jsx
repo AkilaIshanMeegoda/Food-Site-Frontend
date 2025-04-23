@@ -19,11 +19,11 @@ const Success = () => {
         </p>
 
         <a
-          href="/"
+          href="/order"
           className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 transition-all"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
+          Go to My Orders
         </a>
       </div>
     </div>
