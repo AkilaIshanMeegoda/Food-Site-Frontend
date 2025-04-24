@@ -55,11 +55,14 @@ const MyDeliveries = () => {
     );
   }
 
-  const handleAccept = async (orderId, deliveryPersonnelId) => {
+  const handleAccept = async (orderId) => {
     try {
       await axios.post(
         "http://localhost:5003/delivery/accept",
-        { orderId, deliveryPersonnelId },
+        { 
+          orderId, 
+          deliveryPersonnelId: user.userId 
+        },
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -108,8 +111,19 @@ const MyDeliveries = () => {
     }
   };
 
+  // Filter deliveries into:
+  // 1. Available deliveries (pending and assigned to this driver)
+  // 2. Active and completed deliveries (accepted or later status by this driver)
+  const availableDeliveries = deliveries.filter(
+    d => d.status === "pending" && (d.assignedDrivers?.includes(user.userId) || false)
+  );
+  
+  const myDeliveries = deliveries.filter(
+    d => d.status !== "pending" && d.deliveryPersonnelId === user.userId
+  );
+
   // Find the active delivery (one that is accepted, picked up, or on the way)
-  const activeDelivery = deliveries.find(
+  const activeDelivery = myDeliveries.find(
     (d) => d.status === "accepted" || d.status === "picked_up" || d.status === "on_the_way"
   );
   
@@ -145,68 +159,117 @@ const MyDeliveries = () => {
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
             <p className="mt-2 text-gray-600">Loading deliveries...</p>
           </div>
-        ) : deliveries.length === 0 ? (
-          <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
-            No deliveries assigned yet.
-          </div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="px-4 py-2">Order ID</th>
-                  <th className="px-4 py-2">Pickup Address</th>
-                  <th className="px-4 py-2">Drop-off Address</th>
-                  <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {deliveries.map((delivery) => (
-                  <tr 
-                    key={delivery._id} 
-                    className={`border-b ${activeDelivery && activeDelivery.orderId === delivery.orderId ? 'bg-orange-50' : ''}`}
-                  >
-                    <td className="px-4 py-3">
-                      {typeof delivery.orderId === 'object' ? delivery.orderId : delivery.orderId.substring(0, 10)}...
-                    </td>
-                    <td className="px-4 py-3">{delivery.pickupAddress}</td>
-                    <td className="px-4 py-3">{delivery.dropoffAddress}</td>
-                    <td className="px-4 py-3">
-                      <span className={getStatusBadge(delivery.status)}>
-                        {delivery.status.replaceAll("_", " ").toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {delivery.status === "pending" ? (
-                        <button
-                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
-                          onClick={() => handleAccept(delivery.orderId, delivery.deliveryPersonnelId)}
+          <>
+            {/* Available deliveries section */}
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4 text-gray-700">
+                📬 Available Deliveries
+              </h3>
+              
+              {availableDeliveries.length === 0 ? (
+                <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
+                  No available deliveries at the moment.
+                </div>
+              ) : (
+                <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
+                  <table className="min-w-full table-auto">
+                    <thead>
+                      <tr className="bg-gray-200">
+                        <th className="px-4 py-2">Order ID</th>
+                        <th className="px-4 py-2">Pickup Address</th>
+                        <th className="px-4 py-2">Drop-off Address</th>
+                        <th className="px-4 py-2 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {availableDeliveries.map((delivery) => (
+                        <tr key={delivery._id} className="border-b">
+                          <td className="px-4 py-3">
+                            {typeof delivery.orderId === 'object' ? delivery.orderId : delivery.orderId.substring(0, 10)}...
+                          </td>
+                          <td className="px-4 py-3">{delivery.pickupAddress}</td>
+                          <td className="px-4 py-3">{delivery.dropoffAddress}</td>
+                          <td className="px-4 py-3 text-center">
+                            <button
+                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
+                              onClick={() => handleAccept(delivery.orderId)}
+                            >
+                              Accept
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* My active/completed deliveries section */}
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4 text-gray-700">
+                🚚 My Active & Completed Deliveries
+              </h3>
+              
+              {myDeliveries.length === 0 ? (
+                <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
+                  You haven't accepted any deliveries yet.
+                </div>
+              ) : (
+                <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
+                  <table className="min-w-full table-auto">
+                    <thead>
+                      <tr className="bg-gray-200">
+                        <th className="px-4 py-2">Order ID</th>
+                        <th className="px-4 py-2">Pickup Address</th>
+                        <th className="px-4 py-2">Drop-off Address</th>
+                        <th className="px-4 py-2">Status</th>
+                        <th className="px-4 py-2 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {myDeliveries.map((delivery) => (
+                        <tr 
+                          key={delivery._id} 
+                          className={`border-b ${activeDelivery && activeDelivery.orderId === delivery.orderId ? 'bg-orange-50' : ''}`}
                         >
-                          Accept
-                        </button>
-                      ) : delivery.status === "delivered" ? (
-                        <span className="text-green-600 font-medium">✓ Completed</span>
-                      ) : (
-                        <select
-                          value={delivery.status}
-                          onChange={(e) =>
-                            handleStatusUpdate(delivery.orderId, e.target.value)
-                          }
-                          className="border p-2 rounded"
-                        >
-                          <option value="accepted">Accepted</option>
-                          <option value="picked_up">Picked Up</option>
-                          <option value="on_the_way">On The Way</option>
-                          <option value="delivered">Delivered</option>
-                        </select>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                          <td className="px-4 py-3">
+                            {typeof delivery.orderId === 'object' ? delivery.orderId : delivery.orderId.substring(0, 10)}...
+                          </td>
+                          <td className="px-4 py-3">{delivery.pickupAddress}</td>
+                          <td className="px-4 py-3">{delivery.dropoffAddress}</td>
+                          <td className="px-4 py-3">
+                            <span className={getStatusBadge(delivery.status)}>
+                              {delivery.status.replaceAll("_", " ").toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            {delivery.status === "delivered" ? (
+                              <span className="text-green-600 font-medium">✓ Completed</span>
+                            ) : (
+                              <select
+                                value={delivery.status}
+                                onChange={(e) =>
+                                  handleStatusUpdate(delivery.orderId, e.target.value)
+                                }
+                                className="border p-2 rounded"
+                              >
+                                <option value="accepted">Accepted</option>
+                                <option value="picked_up">Picked Up</option>
+                                <option value="on_the_way">On The Way</option>
+                                <option value="delivered">Delivered</option>
+                              </select>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </>
         )}
 
         <div className="mt-8">
@@ -216,7 +279,7 @@ const MyDeliveries = () => {
           <DriverMap
             userId={user.userId}
             orderId={activeDelivery ? activeDelivery.orderId : null}
-            deliveries={deliveries}
+            deliveries={myDeliveries}
             activeDelivery={activeDelivery}
           />
           
