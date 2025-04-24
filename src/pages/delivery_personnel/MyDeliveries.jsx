@@ -8,13 +8,14 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 const MyDeliveries = () => {
   const [deliveries, setDeliveries] = useState([]);
   const { user } = useAuthContext();
-
+  const [loading, setLoading] = useState(true);
 
   // Fetch deliveries function
   const fetchDeliveries = async () => {
     if (!user || !user.token) return;
     
     try {
+      setLoading(true);
       const res = await axios.get(
         "http://localhost:5003/delivery-personnel/my-deliveries",
         {
@@ -22,19 +23,24 @@ const MyDeliveries = () => {
         }
       );
       setDeliveries(res.data || []);  // Ensure it defaults to an empty array if data is undefined
+      setLoading(false);
     } catch (err) {
       console.error("Fetch deliveries error:", err);
       toast.error("Failed to load deliveries.");
+      setLoading(false);
     }
   };
 
-
-
-  useEffect(() => { 
+  useEffect(() => {
+    if (user && user.token) {
       fetchDeliveries();
-  
-  });
-  
+    
+      // Set up an interval to refresh deliveries periodically (every 30 seconds)
+      const intervalId = setInterval(fetchDeliveries, 30000);
+      
+      return () => clearInterval(intervalId);
+    }
+  }, [user]);
   
   // Return early if user or token is not available - AFTER all hooks are defined
   if (!user || !user.token) {
@@ -102,9 +108,29 @@ const MyDeliveries = () => {
     }
   };
 
-  const acceptedDelivery = deliveries.find(
+  // Find the active delivery (one that is accepted, picked up, or on the way)
+  const activeDelivery = deliveries.find(
     (d) => d.status === "accepted" || d.status === "picked_up" || d.status === "on_the_way"
   );
+  
+  // Get address to display based on delivery status
+  const getActiveAddress = () => {
+    if (!activeDelivery) return null;
+    
+    if (activeDelivery.status === "picked_up" || activeDelivery.status === "on_the_way") {
+      return {
+        label: "Heading to",
+        address: activeDelivery.dropoffAddress
+      };
+    } else {
+      return {
+        label: "Pickup from",
+        address: activeDelivery.pickupAddress
+      };
+    }
+  };
+  
+  const activeAddress = getActiveAddress();
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -114,7 +140,12 @@ const MyDeliveries = () => {
           📦 My Deliveries
         </h2>
 
-        {deliveries.length === 0 ? (
+        {loading ? (
+          <div className="text-center p-10">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
+            <p className="mt-2 text-gray-600">Loading deliveries...</p>
+          </div>
+        ) : deliveries.length === 0 ? (
           <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
             No deliveries assigned yet.
           </div>
@@ -132,8 +163,13 @@ const MyDeliveries = () => {
               </thead>
               <tbody>
                 {deliveries.map((delivery) => (
-                  <tr key={delivery._id} className="border-b">
-                    <td className="px-4 py-3">{delivery.orderId}</td>
+                  <tr 
+                    key={delivery._id} 
+                    className={`border-b ${activeDelivery && activeDelivery.orderId === delivery.orderId ? 'bg-orange-50' : ''}`}
+                  >
+                    <td className="px-4 py-3">
+                      {typeof delivery.orderId === 'object' ? delivery.orderId : delivery.orderId.substring(0, 10)}...
+                    </td>
                     <td className="px-4 py-3">{delivery.pickupAddress}</td>
                     <td className="px-4 py-3">{delivery.dropoffAddress}</td>
                     <td className="px-4 py-3">
@@ -149,6 +185,8 @@ const MyDeliveries = () => {
                         >
                           Accept
                         </button>
+                      ) : delivery.status === "delivered" ? (
+                        <span className="text-green-600 font-medium">✓ Completed</span>
                       ) : (
                         <select
                           value={delivery.status}
@@ -171,17 +209,71 @@ const MyDeliveries = () => {
           </div>
         )}
 
-       {acceptedDelivery && (
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold text-center mb-4">
-              📍 Real-Time Driver Location
-            </h3>
-            <DriverMap
-              userId={user.userId}
-              orderId={acceptedDelivery.orderId}
-            />
-          </div>
-        )}
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold text-center mb-4">
+            📍 Real-Time Delivery Map
+          </h3>
+          <DriverMap
+            userId={user.userId}
+            orderId={activeDelivery ? activeDelivery.orderId : null}
+            deliveries={deliveries}
+            activeDelivery={activeDelivery}
+          />
+          
+          {activeDelivery && (
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center mb-2">
+                <div className={`w-3 h-3 rounded-full mr-2 ${
+                  activeDelivery.status === "accepted" ? "bg-blue-500" : 
+                  activeDelivery.status === "picked_up" ? "bg-indigo-500" : 
+                  "bg-orange-500"
+                }`}></div>
+                <h4 className="font-medium text-blue-700">Active Delivery</h4>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600">Order ID</p>
+                  <p className="font-medium">{typeof activeDelivery.orderId === 'object' ? activeDelivery.orderId : activeDelivery.orderId.substring(0, 10)}...</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Status</p>
+                  <p className="font-medium capitalize">{activeDelivery.status.replaceAll("_", " ")}</p>
+                </div>
+                {activeAddress && (
+                  <div className="md:col-span-2">
+                    <p className="text-sm text-gray-600">{activeAddress.label}</p>
+                    <p className="font-medium">{activeAddress.address}</p>
+                  </div>
+                )}
+              </div>
+              
+              {activeDelivery.status === "accepted" && (
+                <div className="mt-3 pt-3 border-t border-blue-200">
+                  <p className="text-sm">
+                    <span className="font-medium text-blue-700">Next Step:</span> Update status to "Picked Up" once you've collected the package
+                  </p>
+                </div>
+              )}
+              
+              {activeDelivery.status === "picked_up" && (
+                <div className="mt-3 pt-3 border-t border-blue-200">
+                  <p className="text-sm">
+                    <span className="font-medium text-blue-700">Next Step:</span> Update status to "On The Way" during transit
+                  </p>
+                </div>
+              )}
+              
+              {activeDelivery.status === "on_the_way" && (
+                <div className="mt-3 pt-3 border-t border-blue-200">
+                  <p className="text-sm">
+                    <span className="font-medium text-blue-700">Next Step:</span> Update status to "Delivered" once the package is delivered
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <Footer />
     </div>
