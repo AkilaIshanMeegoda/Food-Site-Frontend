@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ArrowLeft, TruckIcon, ShoppingBag, Package, Home, CheckCircle } from "lucide-react";
 import Navbar from "../../components/home/Navbar/Navbar";
+import CustomerMap from "../../components/driver/CustomerMap"; // Import the CustomerMap component
 
 const TrackOrder = () => {
   const { orderId } = useParams();
@@ -69,7 +70,7 @@ const TrackOrder = () => {
   }, [orderId, navigate]);
 
   const getDeliveryStatusInfo = () => {
-    if (!delivery) return { current: 0, text: "Pending" };
+    if (!delivery) return { step: 0, text: "Pending" };
 
     const statusMap = {
       pending: { step: 0, text: "Order Confirmed" },
@@ -188,6 +189,9 @@ const TrackOrder = () => {
     );
   }
 
+  // Check if the order is in a trackable state (picked up or on the way)
+  const isTrackable = delivery && ['picked_up', 'on_the_way'].includes(delivery.status);
+
   return (
     <div>
       <Navbar />
@@ -225,7 +229,7 @@ const TrackOrder = () => {
               <div className="py-6">{renderStatusSteps()}</div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mt-8">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Details</h3>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -312,6 +316,13 @@ const TrackOrder = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Live tracking map section */}
+            {isTrackable && (
+              <div className="mt-8">
+                <CustomerMap orderId={orderId} />
+              </div>
+            )}
           </div>
         </div>
       </div>
