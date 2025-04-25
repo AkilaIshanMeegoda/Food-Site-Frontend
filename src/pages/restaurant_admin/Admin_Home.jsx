@@ -10,11 +10,29 @@ const Admin_Home = () => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [ordersLoading, setOrdersLoading] = useState(true);
-  const [isAvailable, setIsAvailable] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(null);
   const [orders, setOrders] = useState([]);
 
+  console.log("check user", user);
   useEffect(() => {
     if (!user?.token || !user?.restaurantId) return;
+
+    const loadRestaurant = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5001/api/restaurants/my-restaurant`,
+          {
+            headers: { Authorization: `Bearer ${user.token}` }
+          }
+        );
+        const json = await res.json();
+        setIsAvailable(json.isAvailable);
+      } catch (err) {
+        toast.error("Could not load restaurant status");
+      }
+    };
+  
+    loadRestaurant();
 
     const fetchOrders = async () => {
       setOrdersLoading(true);
