@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ArrowLeft, TruckIcon, ShoppingBag, Package, Home, CheckCircle } from "lucide-react";
 import Navbar from "../../components/home/Navbar/Navbar";
+import CustomerMap from "../../components/driver/CustomerMap"; // Import the CustomerMap component
 
 const TrackOrder = () => {
   const { orderId } = useParams();
@@ -17,13 +18,14 @@ const TrackOrder = () => {
     const fetchOrderAndDelivery = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          toast.error("Please login to track your order");
-          navigate("/login");
-          return;
-        }
+        // TrackOrder.jsx - Inside fetchOrderAndDelivery
+        const user = JSON.parse(localStorage.getItem("user"));
+const token = localStorage.getItem("token");
+if (!token || !user?.userId) {
+  toast.error("Please login to track your order");
+  navigate("/login");
+  return;
+}
 
         // Fetch order details
         const orderResponse = await axios.get(
@@ -56,8 +58,12 @@ const TrackOrder = () => {
         }
       } catch (error) {
         console.error("Error fetching order details:", error);
-        setError(error.response?.data?.message || "Failed to fetch order details");
-        toast.error("Failed to load order tracking information");
+        if (error.response?.status === 403) {
+          setError("You are not authorized to view this order");
+        } else {
+          setError(error.response?.data?.message || "Failed to fetch order details");
+        }
+        toast.error("Failed to load tracking information");
       } finally {
         setLoading(false);
       }
@@ -69,7 +75,7 @@ const TrackOrder = () => {
   }, [orderId, navigate]);
 
   const getDeliveryStatusInfo = () => {
-    if (!delivery) return { current: 0, text: "Pending" };
+    if (!delivery) return { step: 0, text: "Pending" };
 
     const statusMap = {
       pending: { step: 0, text: "Order Confirmed" },
@@ -168,25 +174,30 @@ const TrackOrder = () => {
           >
             <ArrowLeft className="mr-2" size={18} /> Back to Orders
           </button>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
-              <TruckIcon className="text-red-500 w-8 h-8" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Not Found</h2>
-            <p className="text-gray-600 mb-6">
-              {error || "We couldn't find the order you're looking for."}
-            </p>
-            <button
-              onClick={() => navigate("/order")}
-              className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Back to My Orders
-            </button>
-          </div>
+          {error || !order ? (
+  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+    <div className="w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
+      <TruckIcon className="text-red-500 w-8 h-8" />
+    </div>
+    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+      {error.includes("authorized") ? "Access Denied" : "Order Not Found"}
+    </h2>
+    <p className="text-gray-600 mb-6">{error}</p>
+    <button
+      onClick={() => navigate("/order")}
+      className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+    >
+      Back to My Orders
+    </button>
+  </div>
+) : null}
         </div>
       </div>
     );
   }
+
+  // Check if the order is in a trackable state (picked up or on the way)
+  const isTrackable = delivery && ['picked_up', 'on_the_way'].includes(delivery.status);
 
   return (
     <div>
@@ -225,7 +236,7 @@ const TrackOrder = () => {
               <div className="py-6">{renderStatusSteps()}</div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mt-8">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Details</h3>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -312,6 +323,13 @@ const TrackOrder = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Live tracking map section */}
+            {isTrackable && (
+              <div className="mt-8">
+                <CustomerMap orderId={orderId} />
+              </div>
+            )}
           </div>
         </div>
       </div>

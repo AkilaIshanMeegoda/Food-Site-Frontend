@@ -31,6 +31,7 @@ import AboutUs from "../components/home/AboutUs.jsx";
 import ContactUs from "../components/home/ContactUs.jsx";
 import TrackOrder from "../components/orders/TrackOrder.jsx";
 import Join from "../components/home/Join.jsx";
+import SuperAdminDashBoard from "../pages/super_admin/SuperAdminDashBoard.jsx";
 
 
 function CreateRouter() {
@@ -82,7 +83,8 @@ function CreateRouter() {
           path: "/super_admin/dashboard",
           element: <SuperAdminDashboardLayout />,
           children: [
-            { path: "home", element: <SuperAdminHome /> },
+            { path: "manage-restaurants", element: <SuperAdminHome /> },
+            { path: "home", element: <SuperAdminDashBoard /> },
           ],
         },
       ],
