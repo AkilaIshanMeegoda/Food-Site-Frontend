@@ -32,7 +32,7 @@ const UpdateItem = () => {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/menu-items/${id}`, {
+        const res = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -101,7 +101,7 @@ const UpdateItem = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5001/api/menu-items/${id}`, {
+      const response = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -132,13 +132,13 @@ const UpdateItem = () => {
       >
         Update Item
     </h1>
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold mb-6">Update Menu Item</h1>
+      <div className="container max-w-4xl p-4 mx-auto">
+        <div className="p-6 bg-white rounded-lg shadow-md">
+          <h1 className="mb-6 text-2xl font-bold">Update Menu Item</h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 text-sm font-medium text-gray-700">
                 Name
               </label>
               <input
@@ -149,12 +149,12 @@ const UpdateItem = () => {
                 className="w-full p-2 border rounded"
               />
               {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name}</p>
+                <p className="text-sm text-red-500">{errors.name}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 text-sm font-medium text-gray-700">
                 Description
               </label>
               <textarea
@@ -165,13 +165,13 @@ const UpdateItem = () => {
                 rows="3"
               />
               {errors.description && (
-                <p className="text-red-500 text-sm">{errors.description}</p>
+                <p className="text-sm text-red-500">{errors.description}</p>
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Price (Rs.)
                 </label>
                 <input
@@ -185,12 +185,12 @@ const UpdateItem = () => {
                   min="0"
                 />
                 {errors.price && (
-                  <p className="text-red-500 text-sm">{errors.price}</p>
+                  <p className="text-sm text-red-500">{errors.price}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Category
                 </label>
                 <select
@@ -208,18 +208,18 @@ const UpdateItem = () => {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-4 pt-4">
+            <div className="flex justify-end pt-4 space-x-4">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100"
+                className="px-4 py-2 text-gray-700 border rounded hover:bg-gray-100"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || Object.values(errors).some((e) => e)}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-green-300"
+                className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700 disabled:bg-green-300"
               >
                 {loading ? "Updating..." : "Update Item"}
               </button>

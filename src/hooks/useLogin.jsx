@@ -37,7 +37,7 @@ export const useLogin = () => {
 
     try {
       // Step 1: Authenticate user
-      const authResponse = await fetch("http://localhost:5000/login", {
+      const authResponse = await fetch("http://localhost:8000/userApi/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -54,7 +54,7 @@ export const useLogin = () => {
 
       // Step 2: For restaurant admins, fetch restaurant details
       if (authData.role === "restaurant_admin") {
-        const restaurantResponse = await fetch("http://localhost:5001/api/restaurants/my-restaurant", {
+        const restaurantResponse = await fetch("http://localhost:8000/restaurantApi/restaurants/my-restaurant", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

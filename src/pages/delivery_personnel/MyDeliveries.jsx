@@ -17,7 +17,7 @@ const MyDeliveries = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:5003/delivery-personnel/my-deliveries",
+        "http://localhost:8000/deliveryApi/delivery-personnel/my-deliveries",
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -47,7 +47,7 @@ const MyDeliveries = () => {
     return (
       <div className="min-h-screen bg-gray-100">
         <Navbar />
-        <div className="py-10 px-4 max-w-6xl mx-auto text-center">
+        <div className="max-w-6xl px-4 py-10 mx-auto text-center">
           <p>Please login to see your deliveries.</p>
         </div>
         <Footer />
@@ -58,7 +58,7 @@ const MyDeliveries = () => {
   const handleAccept = async (orderId) => {
     try {
       await axios.post(
-        "http://localhost:5003/delivery/accept",
+        "http://localhost:8000/deliveryApi/delivery/accept",
         { 
           orderId, 
           deliveryPersonnelId: user.userId 
@@ -79,7 +79,7 @@ const MyDeliveries = () => {
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:5003/delivery/update-status/${orderId}`,
+        `http://localhost:8000/deliveryApi/delivery/update-status/${orderId}`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -149,8 +149,8 @@ const MyDeliveries = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="py-10 px-4 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-orange-500 text-center">
+      <div className="max-w-6xl px-4 py-10 mx-auto">
+        <h2 className="mb-6 text-3xl font-bold text-center text-orange-500">
           📦 My Deliveries
         </h2>
 
@@ -273,6 +273,7 @@ const MyDeliveries = () => {
         )}
 
         <div className="mt-8">
+
           <h3 className="text-xl font-semibold text-center mb-4">
             📍 Real-Time Delivery Map
           </h3>

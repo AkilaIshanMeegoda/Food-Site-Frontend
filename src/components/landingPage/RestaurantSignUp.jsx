@@ -41,7 +41,7 @@ const RestaurantSignUp = () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        "http://localhost:5000/register-restaurant-owner",
+        "http://localhost:8000/userApi/user/register-restaurant-owner",
         {
           method: "POST",
           headers: {
