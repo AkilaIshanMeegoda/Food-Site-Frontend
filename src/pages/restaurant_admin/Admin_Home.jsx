@@ -20,7 +20,7 @@ const Admin_Home = () => {
     const loadRestaurant = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5001/api/restaurants/my-restaurant`,
+          `http://localhost:8000/restaurantApi/restaurants/my-restaurant`,
           {
             headers: { Authorization: `Bearer ${user.token}` }
           }

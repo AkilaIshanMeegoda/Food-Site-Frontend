@@ -90,7 +90,7 @@ const Order = () => {
 
   const stripeCheckout = async (orderData) => {
     try {
-      const response = await axios.post("http://localhost:5004/api/payment/checkout", orderData, {
+      const response = await axios.post("http://localhost:8000/deliveryApi/payment/checkout", orderData, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -747,7 +747,7 @@ const Order = () => {
   <div className="mt-4 text-right">
     <button 
       onClick={() => navigate(`/track-order/${order._id}`)}
-      className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+      className="px-4 py-2 text-sm font-medium text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
     >
       Track Order
     </button>
