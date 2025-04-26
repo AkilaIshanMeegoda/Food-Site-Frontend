@@ -38,7 +38,7 @@ const DeliveryRegistrationForm = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5003/delivery-personnel/register",
+        "http://localhost:8000/deliveryApi/delivery-personnel/register",
         formData,
         {
           headers: {
@@ -78,24 +78,24 @@ const DeliveryRegistrationForm = () => {
     <div>
       <Navbar />
       <div
-        className="min-h-screen bg-cover  relative"
+        className="relative min-h-screen bg-cover"
         style={{ backgroundImage: `url(${homeImage})` }}
       >
-        <div className="flex justify-center items-center min-h-screen bg-black/40 ">
+        <div className="flex items-center justify-center min-h-screen bg-black/40 ">
           <form
             onSubmit={handleSubmit}
-            className="bg-white bg-opacity-95 p-10 rounded-3xl shadow-xl w-full max-w-lg"
+            className="w-full max-w-lg p-10 bg-white shadow-xl bg-opacity-95 rounded-3xl"
           >
-            <h2 className="text-3xl font-bold text-center text-orange-500 mb-8">
+            <h2 className="mb-8 text-3xl font-bold text-center text-orange-500">
               Register as a Delivery Driver
             </h2>
 
             {fields.map((field) => (
               <div
                 key={field.name}
-                className="flex items-center bg-gray-100 p-3 rounded-full mb-4 shadow-sm"
+                className="flex items-center p-3 mb-4 bg-gray-100 rounded-full shadow-sm"
               >
-                <div className="text-orange-500 mr-3">{field.icon}</div>
+                <div className="mr-3 text-orange-500">{field.icon}</div>
                 <input
                   type="text"
                   name={field.name}
@@ -103,20 +103,20 @@ const DeliveryRegistrationForm = () => {
                   value={formData[field.name]}
                   onChange={handleChange}
                   required
-                  className="bg-transparent flex-1 outline-none text-sm text-gray-700"
+                  className="flex-1 text-sm text-gray-700 bg-transparent outline-none"
                 />
               </div>
             ))}
 
             <button
               type="submit"
-              className="w-full bg-orange-500 text-white font-semibold py-2 rounded-full hover:bg-orange-600 transition duration-200"
+              className="w-full py-2 font-semibold text-white transition duration-200 bg-orange-500 rounded-full hover:bg-orange-600"
             >
               Register
             </button>
 
             {message && (
-              <p className="text-center mt-4 text-sm text-red-600">{message}</p>
+              <p className="mt-4 text-sm text-center text-red-600">{message}</p>
             )}
           </form>
         </div>

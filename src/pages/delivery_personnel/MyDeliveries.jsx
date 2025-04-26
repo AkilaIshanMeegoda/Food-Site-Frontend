@@ -16,7 +16,7 @@ const MyDeliveries = () => {
     
     try {
       const res = await axios.get(
-        "http://localhost:5003/delivery-personnel/my-deliveries",
+        "http://localhost:8000/deliveryApi/delivery-personnel/my-deliveries",
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -41,7 +41,7 @@ const MyDeliveries = () => {
     return (
       <div className="min-h-screen bg-gray-100">
         <Navbar />
-        <div className="py-10 px-4 max-w-6xl mx-auto text-center">
+        <div className="max-w-6xl px-4 py-10 mx-auto text-center">
           <p>Please login to see your deliveries.</p>
         </div>
         <Footer />
@@ -52,7 +52,7 @@ const MyDeliveries = () => {
   const handleAccept = async (orderId, deliveryPersonnelId) => {
     try {
       await axios.post(
-        "http://localhost:5003/delivery/accept",
+        "http://localhost:8000/deliveryApi/delivery/accept",
         { orderId, deliveryPersonnelId },
         {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -70,7 +70,7 @@ const MyDeliveries = () => {
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:5003/delivery/update-status/${orderId}`,
+        `http://localhost:8000/deliveryApi/delivery/update-status/${orderId}`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -105,13 +105,13 @@ const MyDeliveries = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="py-10 px-4 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-orange-500 text-center">
+      <div className="max-w-6xl px-4 py-10 mx-auto">
+        <h2 className="mb-6 text-3xl font-bold text-center text-orange-500">
           📦 My Deliveries
         </h2>
 
         {deliveries.length === 0 ? (
-          <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
+          <div className="p-6 text-center text-gray-600 bg-white rounded-lg shadow-inner">
             No deliveries assigned yet.
           </div>
         ) : (
@@ -140,7 +140,7 @@ const MyDeliveries = () => {
                     <td className="px-4 py-3 text-center">
                       {delivery.status === "pending" ? (
                         <button
-                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
+                          className="px-4 py-2 text-white bg-green-600 rounded-full hover:bg-green-700"
                           onClick={() => handleAccept(delivery.orderId, delivery.deliveryPersonnelId)}
                         >
                           Accept
@@ -151,7 +151,7 @@ const MyDeliveries = () => {
                           onChange={(e) =>
                             handleStatusUpdate(delivery.orderId, e.target.value)
                           }
-                          className="border p-2 rounded"
+                          className="p-2 border rounded"
                         >
                           <option value="accepted">Accepted</option>
                           <option value="picked_up">Picked Up</option>
@@ -168,7 +168,7 @@ const MyDeliveries = () => {
         )}
 
         <div className="mt-8">
-          <h3 className="text-xl font-semibold text-center mb-4">
+          <h3 className="mb-4 text-xl font-semibold text-center">
             📍 Real-Time Driver Location
           </h3>
           <DriverMap userId={user.userId} />

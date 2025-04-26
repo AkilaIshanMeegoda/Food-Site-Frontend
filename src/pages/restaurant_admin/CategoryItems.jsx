@@ -18,7 +18,7 @@ const CategoryItems = () => {
     try {
         console.log("checking category", category);
       const response = await fetch(
-        `http://localhost:5001/api/public/menu-items/category/${encodeURIComponent(category)}`
+        `http://localhost:8000/restaurantApi/public/menu-items/category/${encodeURIComponent(category)}`
       );
       console.log("checking response", response);
       if (!response.ok) {
@@ -70,7 +70,7 @@ const CategoryItems = () => {
         <h1 className="mb-6 text-2xl font-bold">
           Menu Items for "{category}"
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {menuItems.length > 0 ? (
             menuItems.map((menuItem) => (
               <MenuItemCard
@@ -80,7 +80,7 @@ const CategoryItems = () => {
               />
             ))
           ) : (
-            <p className="text-center text-gray-500 col-span-full py-10">
+            <p className="py-10 text-center text-gray-500 col-span-full">
               No menu items available for this category.
             </p>
           )}
