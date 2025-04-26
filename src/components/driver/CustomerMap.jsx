@@ -32,7 +32,7 @@ const deliveryIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-const BACKEND_URL = "http://localhost:5003";
+const BACKEND_URL = "http://localhost:8000";
 
 // Component to recenter map when driver location changes
 const RecenterMap = ({ lat, lng }) => {
@@ -98,25 +98,25 @@ const CustomerMap = ({ orderId }) => {
       </div>
       
       {loading ? (
-        <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg border border-gray-200">
-          <Loader2 className="w-8 h-8 text-blue-500 animate-spin mr-3" />
+        <div className="flex items-center justify-center h-64 border border-gray-200 rounded-lg bg-gray-50">
+          <Loader2 className="w-8 h-8 mr-3 text-blue-500 animate-spin" />
           <span className="text-gray-600">Connecting to tracking service...</span>
         </div>
       ) : error ? (
-        <div className="p-6 bg-red-50 rounded-lg border border-red-100 text-center">
-          <p className="text-red-600 font-medium">{error}</p>
-          <p className="text-sm text-red-500 mt-2">Please try refreshing the page.</p>
+        <div className="p-6 text-center border border-red-100 rounded-lg bg-red-50">
+          <p className="font-medium text-red-600">{error}</p>
+          <p className="mt-2 text-sm text-red-500">Please try refreshing the page.</p>
         </div>
       ) : !driverLocation ? (
-        <div className="p-6 bg-yellow-50 rounded-lg border border-yellow-100 text-center">
-          <p className="text-amber-600 font-medium">Waiting for driver location updates</p>
-          <p className="text-sm text-amber-500 mt-2">
+        <div className="p-6 text-center border border-yellow-100 rounded-lg bg-yellow-50">
+          <p className="font-medium text-amber-600">Waiting for driver location updates</p>
+          <p className="mt-2 text-sm text-amber-500">
             Driver location will appear when they start the delivery.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="h-64 md:h-80 w-full rounded-lg overflow-hidden shadow-md border border-gray-200">
+          <div className="w-full h-64 overflow-hidden border border-gray-200 rounded-lg shadow-md md:h-80">
             <MapContainer
               center={[driverLocation.lat, driverLocation.lng]}
               zoom={15}
@@ -143,11 +143,11 @@ const CustomerMap = ({ orderId }) => {
             </MapContainer>
           </div>
           
-          <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+          <div className="p-3 border border-blue-100 rounded-lg bg-blue-50">
             <p className="text-sm text-blue-700">
               <span className="font-medium">Last location update:</span> {driverLocation.lastUpdated.toLocaleTimeString()}
             </p>
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="mt-1 text-xs text-blue-600">
               The map updates automatically when new location data is received.
             </p>
           </div>

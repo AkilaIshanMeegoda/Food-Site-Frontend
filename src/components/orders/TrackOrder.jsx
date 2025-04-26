@@ -29,7 +29,7 @@ if (!token || !user?.userId) {
 
         // Fetch order details
         const orderResponse = await axios.get(
-          `http://localhost:5002/api/orders/${orderId}`,
+          `http://localhost:8000/orderApi/order/${orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ if (!token || !user?.userId) {
           
           // Fetch delivery details
           const deliveryResponse = await axios.get(
-            `http://localhost:5003/delivery/order/${orderId}`,
+            `http://localhost:8000/deliveryApi/order/${orderId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -108,19 +108,19 @@ if (!token || !user?.userId) {
     return (
       <div className="relative">
         {/* Progress Bar */}
-        <div className="absolute top-9 left-0 right-0 h-1 bg-gray-200">
+        <div className="absolute left-0 right-0 h-1 bg-gray-200 top-9">
           <div
-            className="h-full bg-blue-500 transition-all duration-500"
+            className="h-full transition-all duration-500 bg-blue-500"
             style={{ width: `${(statusInfo.step / (steps.length - 1)) * 100}%` }}
           ></div>
         </div>
 
         {/* Steps */}
-        <div className="flex justify-between relative">
+        <div className="relative flex justify-between">
           {steps.map((step, index) => (
             <div
               key={index}
-              className="flex flex-col items-center relative z-10"
+              className="relative z-10 flex flex-col items-center"
             >
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
@@ -154,7 +154,7 @@ if (!token || !user?.userId) {
       <div>
         <Navbar />
         <div className="max-w-5xl px-4 py-10 mx-auto">
-          <div className="flex justify-center items-center h-64">
+          <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
             <p className="ml-4 text-gray-600">Loading tracking information...</p>
           </div>
@@ -170,19 +170,19 @@ if (!token || !user?.userId) {
         <div className="max-w-5xl px-4 py-10 mx-auto">
           <button
             onClick={() => navigate("/order")}
-            className="flex items-center mb-6 text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center mb-6 text-blue-600 transition-colors hover:text-blue-800"
           >
             <ArrowLeft className="mr-2" size={18} /> Back to Orders
           </button>
           {error || !order ? (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-    <div className="w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
-      <TruckIcon className="text-red-500 w-8 h-8" />
+  <div className="p-8 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
+    <div className="flex items-center justify-center w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full">
+      <TruckIcon className="w-8 h-8 text-red-500" />
     </div>
-    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+    <h2 className="mb-2 text-2xl font-bold text-gray-800">
       {error.includes("authorized") ? "Access Denied" : "Order Not Found"}
     </h2>
-    <p className="text-gray-600 mb-6">{error}</p>
+    <p className="mb-6 text-gray-600">{error}</p>
     <button
       onClick={() => navigate("/order")}
       className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
@@ -205,29 +205,29 @@ if (!token || !user?.userId) {
       <div className="max-w-5xl px-4 py-10 mx-auto">
         <button
           onClick={() => navigate("/order")}
-          className="flex items-center mb-6 text-blue-600 hover:text-blue-800 transition-colors"
+          className="flex items-center mb-6 text-blue-600 transition-colors hover:text-blue-800"
         >
           <ArrowLeft className="mr-2" size={18} /> Back to Orders
         </button>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
             <h2 className="text-xl font-bold text-gray-800">
               Tracking Order #{orderId.substring(orderId.length - 6)}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-gray-500">
               Order placed on {formatDate(order.createdAt)}
             </p>
           </div>
 
           <div className="p-6">
             <div className="mb-8">
-              <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6">
-                <p className="text-blue-700 font-medium">
+              <div className="p-4 mb-6 border border-blue-100 rounded-lg bg-blue-50">
+                <p className="font-medium text-blue-700">
                   Current Status: <span className="font-semibold">{statusInfo.text}</span>
                 </p>
                 {delivery?.deliveryPersonnelId && (
-                  <p className="text-sm text-blue-600 mt-1">
+                  <p className="mt-1 text-sm text-blue-600">
                     Delivery Agent: {delivery.deliveryPersonnelId}
                   </p>
                 )}
@@ -236,10 +236,10 @@ if (!token || !user?.userId) {
               <div className="py-6">{renderStatusSteps()}</div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid gap-8 md:grid-cols-2">
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Details</h3>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h3 className="mb-4 text-lg font-semibold text-gray-800">Order Details</h3>
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-500">Order ID:</span>
@@ -266,7 +266,7 @@ if (!token || !user?.userId) {
                       </span>
                     </div>
                     <div className="flex justify-between pt-2 border-t border-gray-200">
-                      <span className="text-gray-700 font-medium">Total Amount:</span>
+                      <span className="font-medium text-gray-700">Total Amount:</span>
                       <span className="font-bold text-blue-600">Rs{order.totalAmount.toFixed(2)}</span>
                     </div>
                   </div>
@@ -274,8 +274,8 @@ if (!token || !user?.userId) {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Delivery Information</h3>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h3 className="mb-4 text-lg font-semibold text-gray-800">Delivery Information</h3>
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-500">Delivery Address:</span>
@@ -302,8 +302,8 @@ if (!token || !user?.userId) {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold text-gray-800 mb-4 mt-6">Items</h3>
-                <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+                <h3 className="mt-6 mb-4 text-lg font-semibold text-gray-800">Items</h3>
+                <div className="overflow-hidden border border-gray-200 rounded-lg bg-gray-50">
                   {order.items.map((item, index) => (
                     <div
                       key={index}
