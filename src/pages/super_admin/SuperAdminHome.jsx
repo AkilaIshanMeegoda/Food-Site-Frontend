@@ -89,7 +89,7 @@ const SuperAdminHome = () => {
                     <tr key={restaurant._id} className="transition-colors hover:bg-gray-800">
                       <td className="px-4 py-3 text-white">{restaurant.name}</td>
                       <td className="px-4 py-3 text-white">{restaurant.address}</td>
-                      <td className="px-4 py-3 text-white">{restaurant.telephone}</td>
+                      <td className="px-4 py-3 text-white">{restaurant.phone}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-1 rounded-full text-sm ${
                           restaurant.isActive
