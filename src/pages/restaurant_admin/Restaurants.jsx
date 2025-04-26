@@ -11,7 +11,7 @@ const Restaurants = () => {
   // Fetch restaurants from the API endpoint.
   const fetchRestaurants = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/public/restaurants");
+      const response = await fetch("http://localhost:8000/restaurantApi/public/restaurants");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -66,15 +66,15 @@ const Restaurants = () => {
       <Navbar />
       <div className="p-8">
         <h1 className="mb-6 text-2xl font-bold">Our Restaurants</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {restaurants.length > 0 ? (
             restaurants.map((restaurant) => (
               <div
                 key={restaurant._id}
                 onClick={() => handleCardClick(restaurant._id, restaurant)}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                className="overflow-hidden transition-shadow duration-300 bg-white rounded-lg shadow-md cursor-pointer hover:shadow-lg"
               >
-                <div className="p-4 h-48 flex items-center justify-center bg-gray-50">
+                <div className="flex items-center justify-center h-48 p-4 bg-gray-50">
                   {restaurant.image ? (
                     <img
                       src={restaurant.image}
@@ -86,24 +86,24 @@ const Restaurants = () => {
                       }}
                     />
                   ) : (
-                    <div className="h-full w-full flex items-center justify-center bg-gray-200 text-gray-500">
+                    <div className="flex items-center justify-center w-full h-full text-gray-500 bg-gray-200">
                       No Image
                     </div>
                   )}
                 </div>
                 <div className="p-4">
-                  <h2 className="text-lg font-semibold mb-2">{restaurant.name}</h2>
-                  <p className="text-gray-600 text-sm line-clamp-2">
+                  <h2 className="mb-2 text-lg font-semibold">{restaurant.name}</h2>
+                  <p className="text-sm text-gray-600 line-clamp-2">
                     {restaurant.address || "No address available"}
                   </p>
-                  <p className="text-gray-600 text-sm line-clamp-2">
+                  <p className="text-sm text-gray-600 line-clamp-2">
                     {restaurant.phone || "No phone number available"}
                   </p>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500 col-span-full py-10">
+            <p className="py-10 text-center text-gray-500 col-span-full">
               No restaurants available
             </p>
           )}

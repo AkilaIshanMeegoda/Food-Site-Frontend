@@ -36,8 +36,11 @@ const UpdateItem = () => {
     const fetchItem = async () => {
       if (!user) return;
       try {
-        const res = await fetch(`http://localhost:5001/api/menu-items/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
+
+        const res = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
         });
         if (!res.ok) throw new Error("Failed to fetch item");
         const data = await res.json();
@@ -104,7 +107,8 @@ const UpdateItem = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/menu-items/${id}`, {
+
+      const response = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -142,7 +146,7 @@ const UpdateItem = () => {
                 className="w-full p-2 border rounded"
               />
               {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name}</p>
+                <p className="text-sm text-red-500">{errors.name}</p>
               )}
             </div>
             {/* Description */}
@@ -156,9 +160,10 @@ const UpdateItem = () => {
                 rows={3}
               />
               {errors.description && (
-                <p className="text-red-500 text-sm">{errors.description}</p>
+                <p className="text-sm text-red-500">{errors.description}</p>
               )}
             </div>
+
             {/* Price & Category */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
@@ -173,7 +178,7 @@ const UpdateItem = () => {
                   min="0"
                 />
                 {errors.price && (
-                  <p className="text-red-500 text-sm">{errors.price}</p>
+                  <p className="text-sm text-red-500">{errors.price}</p>
                 )}
               </div>
               <div>
@@ -192,6 +197,7 @@ const UpdateItem = () => {
                 </select>
               </div>
             </div>
+
             {/* Availability */}
             <div className="flex items-center">
               <input

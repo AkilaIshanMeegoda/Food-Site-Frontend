@@ -23,7 +23,7 @@ const ManageOrders = () => {
         setError('');
 
         const response = await fetch(
-          `http://localhost:5002/api/orders/restaurant/${user.restaurantId}`,
+          `http://localhost:8000/orderApi/order/restaurant/${user.restaurantId}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -57,7 +57,7 @@ const ManageOrders = () => {
       
       // 1. Update order status
       const response = await fetch(
-        `http://localhost:5002/api/order/${orderId}`,
+        `http://localhost:8000/orderApi/order/${orderId}`,
         {
           method: 'PATCH',
           headers: {
@@ -81,7 +81,7 @@ const ManageOrders = () => {
       // 3. Call delivery API to assign delivery
       try {
         const deliveryResponse = await fetch(
-          'http://localhost:5003/delivery/assign',
+          'http://localhost:8000/deliveryApi/delivery/assign',
           {
             method: 'POST',
             headers: {
