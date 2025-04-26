@@ -49,6 +49,8 @@ const Order = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
+  let orderData;
+
   // Fetch user's orders on component mount
   useEffect(() => {
     if (user?.userId) {
@@ -86,6 +88,25 @@ const Order = () => {
     }
   };
 
+  const stripeCheckout = async (orderData) => {
+    try {
+      const response = await axios.post("http://localhost:5004/api/payment/checkout", orderData, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+  
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        toast.error("Failed to get Stripe URL");
+      }
+    } catch (error) {
+      console.error("Stripe checkout failed", error);
+      toast.error("Stripe checkout failed");
+    }
+  };
+
   const handlePlaceOrder = async () => {
     if (cart.items.length === 0) {
       toast.error("Your cart is empty!");
@@ -106,7 +127,7 @@ const Order = () => {
         return;
       }
 
-      const orderData = {
+      orderData = {
         customerId: user.userId,
         customerName,
         customerEmail,
@@ -124,25 +145,30 @@ const Order = () => {
         paymentMethod,
       };
 
-      const response = await axios.post(
-        "http://localhost:8000/orderApi/order",
-        orderData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+      if (paymentMethod === "cash") {
+        const response = await axios.post(
+          "http://localhost:8000/orderApi/order",
+          orderData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (response.data.success) {
+          toast.success("Order placed successfully!");
+          clearCart();
+          fetchOrders();
+          setActiveTab("orders");
+        } else {
+          toast.error(response.data.message || "Failed to place order");
         }
-      );
-
-      if (response.data.success) {
-        toast.success("Order placed successfully!");
-        clearCart();
-        fetchOrders();
-        setActiveTab("orders");
-      } else {
-        toast.error(response.data.message || "Failed to place order");
+      } else if (paymentMethod === "card") {
+        await stripeCheckout(orderData);
       }
+
     } catch (error) {
       console.error("Error placing order:", error);
       toast.error(error.response?.data?.message || "Failed to place order");
@@ -716,11 +742,17 @@ const Order = () => {
                         Rs{order.totalAmount.toFixed(2)}
                       </span>
                     </div>
-                    <div className="mt-4 text-right">
-                      <button className="px-4 py-2 text-sm font-medium text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100">
-                        Track Order
-                      </button>
-                    </div>
+                    
+                    {order.orderStatus !== 'false' && (
+  <div className="mt-4 text-right">
+    <button 
+      onClick={() => navigate(`/track-order/${order._id}`)}
+      className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+    >
+      Track Order
+    </button>
+  </div>
+)}
                   </div>
                 </div>
               )}

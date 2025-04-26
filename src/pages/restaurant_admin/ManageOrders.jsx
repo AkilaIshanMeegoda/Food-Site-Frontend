@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import OrderCard from '../../components/orders/OrderCard';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { toast } from 'react-toastify';
+import Navbar from '../../components/home/Navbar/Navbar';
 
 const ManageOrders = () => {
   const { user } = useAuthContext();
@@ -118,26 +119,29 @@ const ManageOrders = () => {
   if (!user) return <div>Loading user information...</div>;
 
   return (
-    <div className="p-8">
-      <h1
-        className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-black"
-        style={{
-          fontSize: "2rem",
-          marginTop: "40px",
-          marginBottom: "6px",
-          marginLeft: "20px",
-        }}
-      >
-        Restaurant Order Management
-      </h1>
-      <div className="container p-4 mx-auto">
-        <OrderCard
-          orders={orders}
-          loading={loading}
-          error={error}
-          onApprove={handleApprove}
-          restaurantName={user?.restaurant?.name || 'Your Restaurant'}
-        />
+    <div>
+      <Navbar />
+      <div className="p-8">
+        <h1
+          className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-black"
+          style={{
+            fontSize: "2rem",
+            marginTop: "40px",
+            marginBottom: "6px",
+            marginLeft: "20px",
+          }}
+        >
+          Restaurant Order Management
+        </h1>
+        <div className="container mx-auto p-4">
+          <OrderCard
+            orders={orders}
+            loading={loading}
+            error={error}
+            onApprove={handleApprove}
+            restaurantName={user?.restaurant?.name || 'Your Restaurant'}
+          />
+        </div>
       </div>
     </div>
   );

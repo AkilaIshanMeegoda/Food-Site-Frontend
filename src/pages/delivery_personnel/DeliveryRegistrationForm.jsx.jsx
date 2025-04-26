@@ -6,6 +6,7 @@ import {
   FaTruck,
   FaMapMarkerAlt,
   FaIdCard,
+  FaEnvelope 
 } from "react-icons/fa";
 import { Footer } from "flowbite-react";
 import homeImage from "../../images/delivery.jpg";
@@ -18,6 +19,7 @@ const DeliveryRegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    email: "", 
     vehicleType: "",
     vehicleNumber: "",
     currentLocation: "",
@@ -61,6 +63,7 @@ const DeliveryRegistrationForm = () => {
   const fields = [
     { name: "name", placeholder: "Full Name", icon: <FaUser /> },
     { name: "phone", placeholder: "Phone Number", icon: <FaPhone /> },
+    { name: "email", placeholder: "Email Address", icon: <FaEnvelope  /> }, 
     { name: "vehicleType", placeholder: "Vehicle Type", icon: <FaTruck /> },
     {
       name: "vehicleNumber",
