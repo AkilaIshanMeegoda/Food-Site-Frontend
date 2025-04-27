@@ -42,7 +42,7 @@ if (!token || !user?.userId) {
           
           // Fetch delivery details
           const deliveryResponse = await axios.get(
-            `http://localhost:8000/deliveryApi/order/${orderId}`,
+            `http://localhost:8000/deliveryApi/delivery/${orderId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
