@@ -69,7 +69,7 @@ const Order = () => {
       }
 
       const response = await axios.get(
-        `http://localhost:5002/api/orders/customer/${user.userId}`,
+        `http://localhost:8000/orderApi/order/customer/${user.userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -90,7 +90,7 @@ const Order = () => {
 
   const stripeCheckout = async (orderData) => {
     try {
-      const response = await axios.post("http://localhost:5004/api/payment/checkout", orderData, {
+      const response = await axios.post("http://localhost:8000/paymentApi/payment/checkout", orderData, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -147,7 +147,7 @@ const Order = () => {
 
       if (paymentMethod === "cash") {
         const response = await axios.post(
-          "http://localhost:5002/api/order",
+          "http://localhost:8000/orderApi/order",
           orderData,
           {
             headers: {
@@ -235,9 +235,9 @@ const Order = () => {
       <h2 className="text-2xl font-bold text-gray-800">Your Cart</h2>
 
       {cart.items.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="w-16 h-16 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-            <ShoppingCart className="text-gray-400 w-8 h-8" />
+        <div className="p-12 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center justify-center w-16 h-16 mx-auto mb-6 bg-gray-100 rounded-full">
+            <ShoppingCart className="w-8 h-8 text-gray-400" />
           </div>
           <h3 className="mb-2 text-xl font-medium text-gray-700">
             Your cart is empty
@@ -254,10 +254,10 @@ const Order = () => {
         </div>
       ) : (
         <>
-          <div className="overflow-hidden bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
             <div className="p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
-              <h3 className="font-semibold text-gray-800 flex items-center">
-                <span className="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+              <h3 className="flex items-center font-semibold text-gray-800">
+                <span className="w-2 h-2 mr-2 bg-blue-500 rounded-full"></span>
                 {cart.restaurantName || "Restaurant"}
               </h3>
             </div>
@@ -266,32 +266,32 @@ const Order = () => {
               {cart.items.map((item) => (
                 <div
                   key={item._id}
-                  className="flex items-center p-5 hover:bg-gray-50 transition-colors"
+                  className="flex items-center p-5 transition-colors hover:bg-gray-50"
                 >
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
+                  <div className="flex-shrink-0 w-16 h-16 mr-4 overflow-hidden bg-gray-100 rounded-lg">
                     <img
                       src={foodImages.default}
                       alt={item.name}
-                      className="w-full h-full object-cover"
+                      className="object-cover w-full h-full"
                     />
                   </div>
 
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900 mb-1">
+                    <h4 className="mb-1 font-medium text-gray-900">
                       {item.name}
                     </h4>
-                    <p className="text-blue-600 font-semibold">
+                    <p className="font-semibold text-blue-600">
                       Rs{item.price.toFixed(2)}
                     </p>
                   </div>
 
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="flex items-center overflow-hidden border border-gray-200 rounded-lg">
                       <button
                         onClick={() =>
                           updateQuantity(item._id, item.quantity - 1)
                         }
-                        className="p-2 text-gray-500 hover:bg-gray-100 transition-colors"
+                        className="p-2 text-gray-500 transition-colors hover:bg-gray-100"
                         disabled={item.quantity <= 1}
                       >
                         <Minus
@@ -300,7 +300,7 @@ const Order = () => {
                         />
                       </button>
 
-                      <span className="w-8 text-center text-gray-800 font-medium">
+                      <span className="w-8 font-medium text-center text-gray-800">
                         {item.quantity}
                       </span>
 
@@ -308,7 +308,7 @@ const Order = () => {
                         onClick={() =>
                           updateQuantity(item._id, item.quantity + 1)
                         }
-                        className="p-2 text-gray-500 hover:bg-gray-100 transition-colors"
+                        className="p-2 text-gray-500 transition-colors hover:bg-gray-100"
                       >
                         <Plus size={14} />
                       </button>
@@ -316,7 +316,7 @@ const Order = () => {
 
                     <button
                       onClick={() => removeFromCart(item._id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                      className="p-2 text-red-500 transition-colors rounded-full hover:bg-red-50"
                       aria-label="Remove item"
                     >
                       <Trash2 size={18} />
@@ -327,10 +327,10 @@ const Order = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-6">
-              <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-800 pb-2 border-b border-gray-100">
+              <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+                <h3 className="pb-2 mb-4 text-lg font-semibold text-gray-800 border-b border-gray-100">
                   Customer Details
                 </h3>
 
@@ -344,7 +344,7 @@ const Order = () => {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="Enter your name"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
                   </div>
@@ -357,7 +357,7 @@ const Order = () => {
                       value={customerEmail}
                       onChange={(e) => setCustomerEmail(e.target.value)}
                       placeholder="Enter your email address"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
                   </div>
@@ -370,15 +370,15 @@ const Order = () => {
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       placeholder="Enter your contact number"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-800 pb-2 border-b border-gray-100">
+              <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
+                <h3 className="pb-2 mb-4 text-lg font-semibold text-gray-800 border-b border-gray-100">
                   Delivery Details
                 </h3>
 
@@ -392,7 +392,7 @@ const Order = () => {
                       value={deliveryAddress}
                       onChange={(e) => setDeliveryAddress(e.target.value)}
                       placeholder="Enter your full address"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
                   </div>
@@ -405,7 +405,7 @@ const Order = () => {
                       value={deliveryInstructions}
                       onChange={(e) => setDeliveryInstructions(e.target.value)}
                       placeholder="Any special instructions for delivery?"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       rows="3"
                     />
                   </div>
@@ -426,7 +426,7 @@ const Order = () => {
                           type="radio"
                           checked={paymentMethod === "card"}
                           onChange={() => setPaymentMethod("card")}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 hidden"
+                          className="hidden w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                         />
                         <CreditCard
                           className={`mr-3 ${
@@ -458,7 +458,7 @@ const Order = () => {
                           type="radio"
                           checked={paymentMethod === "cash"}
                           onChange={() => setPaymentMethod("cash")}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 hidden"
+                          className="hidden w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                         />
                         <Banknote
                           className={`mr-3 ${
@@ -484,12 +484,12 @@ const Order = () => {
               </div>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100 sticky top-6 self-start">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800 pb-2 border-b border-gray-100">
+            <div className="sticky self-start p-6 bg-white border border-gray-100 shadow-sm rounded-xl top-6">
+              <h3 className="pb-2 mb-4 text-lg font-semibold text-gray-800 border-b border-gray-100">
                 Order Summary
               </h3>
 
-              <div className="space-y-3 mb-6">
+              <div className="mb-6 space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium text-gray-800">
@@ -509,8 +509,8 @@ const Order = () => {
                   </span>
                 </div>
 
-                <div className="pt-3 mt-3 border-t border-dashed border-gray-200">
-                  <div className="flex justify-between items-center">
+                <div className="pt-3 mt-3 border-t border-gray-200 border-dashed">
+                  <div className="flex items-center justify-between">
                     <span className="font-medium text-gray-700">
                       Total Amount
                     </span>
@@ -518,7 +518,7 @@ const Order = () => {
                       Rs{(totalAmount + 150 + totalAmount * 0.05).toFixed(2)}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 text-right">
+                  <div className="mt-1 text-xs text-right text-gray-500">
                     Inclusive of all taxes
                   </div>
                 </div>
@@ -537,7 +537,7 @@ const Order = () => {
                 {loading ? (
                   <span className="flex items-center justify-center">
                     <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      className="w-4 h-4 mr-2 -ml-1 text-white animate-spin"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -566,7 +566,7 @@ const Order = () => {
                 )}
               </button>
 
-              <div className="mt-4 text-center text-xs text-gray-500">
+              <div className="mt-4 text-xs text-center text-gray-500">
                 By placing your order, you agree to our Terms of Service and
                 Privacy Policy
               </div>
@@ -579,17 +579,17 @@ const Order = () => {
 
   const renderOrdersTab = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">My Orders</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-800">My Orders</h2>
 
       {orderLoading ? (
-        <div className="py-16 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="py-16 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="w-12 h-12 mx-auto border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600">Loading your orders...</p>
         </div>
       ) : orders.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="w-16 h-16 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-            <ShoppingCart className="text-gray-400 w-8 h-8" />
+        <div className="p-12 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="flex items-center justify-center w-16 h-16 mx-auto mb-6 bg-gray-100 rounded-full">
+            <ShoppingCart className="w-8 h-8 text-gray-400" />
           </div>
           <h3 className="mb-2 text-xl font-medium text-gray-700">
             No orders yet
@@ -625,18 +625,18 @@ const Order = () => {
               >
                 <div className="flex items-center">
                   <div className="mr-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
                       <ShoppingCart className="w-5 h-5 text-blue-600" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 flex items-center">
+                    <h3 className="flex items-center font-medium text-gray-800">
                       Order #{order._id.substring(order._id.length - 6)}
                       {order.orderStatus === "delivered" && (
-                        <CircleCheck className="ml-2 w-4 h-4 text-green-500" />
+                        <CircleCheck className="w-4 h-4 ml-2 text-green-500" />
                       )}
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="mt-1 text-sm text-gray-500">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
@@ -652,10 +652,10 @@ const Order = () => {
               </div>
 
               {selectedOrder === order._id && (
-                <div className="border-t border-gray-100 p-5 bg-gray-50">
-                  <div className="grid md:grid-cols-2 gap-6">
+                <div className="p-5 border-t border-gray-100 bg-gray-50">
+                  <div className="grid gap-6 md:grid-cols-2">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      <h4 className="mb-3 text-sm font-medium text-gray-700">
                         Order Details
                       </h4>
                       <div className="space-y-2 text-sm">
@@ -703,10 +703,10 @@ const Order = () => {
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      <h4 className="mb-3 text-sm font-medium text-gray-700">
                         Items
                       </h4>
-                      <div className="bg-white p-3 rounded-lg border border-gray-200">
+                      <div className="p-3 bg-white border border-gray-200 rounded-lg">
                         {order.items.map((item, index) => (
                           <div
                             key={index}
@@ -733,20 +733,26 @@ const Order = () => {
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700 font-medium">
+                  <div className="pt-4 mt-6 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-700">
                         Total Amount
                       </span>
                       <span className="text-xl font-bold text-blue-600">
                         Rs{order.totalAmount.toFixed(2)}
                       </span>
                     </div>
-                    <div className="mt-4 text-right">
-                      <button className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                        Track Order
-                      </button>
-                    </div>
+                    
+                    {order.orderStatus !== 'false' && (
+  <div className="mt-4 text-right">
+    <button 
+      onClick={() => navigate(`/track-order/${order._id}`)}
+      className="px-4 py-2 text-sm font-medium text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+    >
+      Track Order
+    </button>
+  </div>
+)}
                   </div>
                 </div>
               )}
@@ -763,7 +769,7 @@ const Order = () => {
       <div className="max-w-5xl px-4 py-10 mx-auto">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center mb-6 text-blue-600 hover:text-blue-800 transition-colors"
+          className="flex items-center mb-6 text-blue-600 transition-colors hover:text-blue-800"
         >
           <ArrowLeft className="mr-2" size={18} /> Back to Home
         </button>

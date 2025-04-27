@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import OrderCard from '../../components/orders/OrderCard';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { toast } from 'react-toastify';
+import Navbar from '../../components/home/Navbar/Navbar';
 
 const ManageOrders = () => {
   const { user } = useAuthContext();
@@ -22,7 +23,7 @@ const ManageOrders = () => {
         setError('');
 
         const response = await fetch(
-          `http://localhost:5002/api/orders/restaurant/${user.restaurantId}`,
+          `http://localhost:8000/orderApi/order/restaurant/${user.restaurantId}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -56,7 +57,7 @@ const ManageOrders = () => {
       
       // 1. Update order status
       const response = await fetch(
-        `http://localhost:5002/api/order/${orderId}`,
+        `http://localhost:8000/orderApi/order/${orderId}`,
         {
           method: 'PATCH',
           headers: {
@@ -80,7 +81,7 @@ const ManageOrders = () => {
       // 3. Call delivery API to assign delivery
       try {
         const deliveryResponse = await fetch(
-          'http://localhost:5003/delivery/assign',
+          'http://localhost:8000/deliveryApi/delivery/assign',
           {
             method: 'POST',
             headers: {
@@ -118,26 +119,29 @@ const ManageOrders = () => {
   if (!user) return <div>Loading user information...</div>;
 
   return (
-    <div className="p-8">
-      <h1
-        className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-black"
-        style={{
-          fontSize: "2rem",
-          marginTop: "40px",
-          marginBottom: "6px",
-          marginLeft: "20px",
-        }}
-      >
-        Restaurant Order Management
-      </h1>
-      <div className="container mx-auto p-4">
-        <OrderCard
-          orders={orders}
-          loading={loading}
-          error={error}
-          onApprove={handleApprove}
-          restaurantName={user?.restaurant?.name || 'Your Restaurant'}
-        />
+    <div>
+      <Navbar />
+      <div className="p-8">
+        <h1
+          className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-black"
+          style={{
+            fontSize: "2rem",
+            marginTop: "40px",
+            marginBottom: "6px",
+            marginLeft: "20px",
+          }}
+        >
+          Restaurant Order Management
+        </h1>
+        <div className="container mx-auto p-4">
+          <OrderCard
+            orders={orders}
+            loading={loading}
+            error={error}
+            onApprove={handleApprove}
+            restaurantName={user?.restaurant?.name || 'Your Restaurant'}
+          />
+        </div>
       </div>
     </div>
   );
