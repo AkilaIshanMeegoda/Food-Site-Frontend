@@ -22,7 +22,7 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png"
 });
 
-const BACKEND_URL = "http://localhost:5003";
+const BACKEND_URL = "http://localhost:8000";
 
 const RecenterMap = ({ lat, lng }) => {
   const map = useMap();
@@ -267,7 +267,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
         </MapContainer>
       </div>
       {error && (
-        <div className="text-red-500 font-medium mt-4">⚠️ {error}</div>
+        <div className="mt-4 font-medium text-red-500">⚠️ {error}</div>
       )}
       <div className="mt-4 p-3 bg-white rounded shadow">
         <h4 className="font-medium text-gray-700 mb-2">Map Legend:</h4>

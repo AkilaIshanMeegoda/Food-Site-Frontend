@@ -18,7 +18,7 @@ const MenuItemCard = ({ item, onCardClick }) => {
     if (!item.isAvailable) return;
 
     const restaurantId = item.restaurantId || props.restaurantId;
-    const restaurantName = item.name || "Restaurant";
+    const restaurantName = item.restaurantName;
 
     if (!user || user.role !== "customer") {
       toast.error("Please login to add items to cart.");

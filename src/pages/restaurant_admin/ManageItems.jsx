@@ -16,7 +16,7 @@ const ManageItems = () => {
 
     setLoadingItems(true);
     try {
-      const res = await fetch("http://localhost:5001/api/menu-items/", {
+      const res = await fetch("http://localhost:8000/restaurantApi/menu-items/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const ManageItems = () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/menu-items/${itemId}`,
+          `http://localhost:8000/restaurantApi/menu-items/${itemId}`,
           {
             method: "DELETE",
             headers: {
@@ -109,7 +109,7 @@ const ManageItems = () => {
                 className="relative overflow-hidden bg-white shadow-md cursor-pointer rounded-2xl"
                 onClick={() => handleCardClick(item._id)}
               >
-                <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+                <div className="relative w-full h-48 overflow-hidden bg-gray-100">
                   {/* Loading spinner */}
                   {loadingImages[item._id] && (
                     <div className="absolute inset-0 flex items-center justify-center">

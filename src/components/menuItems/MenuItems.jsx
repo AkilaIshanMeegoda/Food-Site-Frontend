@@ -11,7 +11,7 @@ const MenuItems = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/public/all-menu-items");
+      const response = await fetch("http://localhost:8000/restaurantApi/public/all-menu-items");
       console.log("Raw response:", response);
 
       if (!response.ok) {
@@ -64,7 +64,7 @@ const MenuItems = () => {
       <Navbar />
       <div className="p-8">
         <h1 className="mb-6 text-2xl font-bold">Our Menu</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {items.length > 0 ? (
             items.map((item) => (
               <MenuItemCard 
@@ -74,7 +74,7 @@ const MenuItems = () => {
               />
             ))
           ) : (
-            <p className="text-center text-gray-500 col-span-full py-10">
+            <p className="py-10 text-center text-gray-500 col-span-full">
               No menu items available
             </p>
           )}

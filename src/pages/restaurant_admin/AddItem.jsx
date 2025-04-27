@@ -89,7 +89,7 @@ const AddItem = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5001/api/menu-items/", {
+      const response = await fetch("http://localhost:8000/restaurantApi/menu-items/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,10 +112,10 @@ const AddItem = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-16">
+    <div className="min-h-screen pb-16 bg-gray-100">
       <Navbar />
-      <div className="max-w-4xl mx-auto mt-16 p-8 bg-white shadow rounded-3xl">
-        <h2 className="text-2xl font-bold mb-6">Add New Item</h2>
+      <div className="max-w-4xl p-8 mx-auto mt-16 bg-white shadow rounded-3xl">
+        <h2 className="mb-6 text-2xl font-bold">Add New Item</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <input
             type="text"
@@ -195,7 +195,7 @@ const AddItem = () => {
           <button
             type="submit"
             disabled={uploading || loading || !formData.image}
-            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+            className="px-6 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 disabled:opacity-50"
           >
             {loading ? "Adding..." : "Add Item"}
           </button>
