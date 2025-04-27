@@ -32,7 +32,7 @@ const deliveryIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "http://localhost:5003";
 
 // Component to recenter map when driver location changes
 const RecenterMap = ({ lat, lng }) => {
