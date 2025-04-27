@@ -98,6 +98,7 @@ const Order = () => {
   
       if (response.data.url) {
         window.location.href = response.data.url;
+        clearCart();
       } else {
         toast.error("Failed to get Stripe URL");
       }
