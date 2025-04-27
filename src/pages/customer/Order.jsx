@@ -90,7 +90,7 @@ const Order = () => {
 
   const stripeCheckout = async (orderData) => {
     try {
-      const response = await axios.post("http://localhost:8000/deliveryApi/payment/checkout", orderData, {
+      const response = await axios.post("http://localhost:8000/paymentApi/payment/checkout", orderData, {
         headers: {
           "Content-Type": "application/json"
         }
