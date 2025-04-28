@@ -22,7 +22,7 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png"
 });
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "http://localhost:5003";
 
 const RecenterMap = ({ lat, lng }) => {
   const map = useMap();
@@ -30,7 +30,7 @@ const RecenterMap = ({ lat, lng }) => {
     if (lat && lng) {
       console.log("📍 RecenterMap triggered. New center:", lat, lng);
       map.setView([lat, lng], 10);  //zoom
-    }
+    } 
   }, [lat, lng, map]);
   return null;
 };

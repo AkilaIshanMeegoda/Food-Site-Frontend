@@ -7,10 +7,42 @@ const ClientSignUp = () => {
   const [password, setPassword] = useState("");
   const { signUp, error, isLoading } = useSignUp();
   const [role, setRole] = useState("customer");
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {
+      email: validateField("email", email),
+      password: validateField("password", password),
+    };
+    setErrors(newErrors);
+    if (newErrors.email || newErrors.password) {
+      return;
+    }
     await signUp(email, password, role);
+  };
+
+  const validateField = (name, value) => {
+    if (name === "email") {
+      if (!value.trim()) return "Email is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()))
+        return "Invalid email address";
+      return "";
+    }
+    if (name === "password") {
+      if (!value) return "Password is required";
+      if (value.length < 8) return "Password must be at least 8 characters";
+      if (!/[A-Z]/.test(value))
+        return "Password must contain at least one uppercase letter";
+      if (!/[a-z]/.test(value))
+        return "Password must contain at least one lowercase letter";
+      if (!/[0-9]/.test(value))
+        return "Password must contain at least one number";
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(value))
+        return "Password must contain at least one special character";
+      return "";
+    }
+    return "";
   };
 
   return (
@@ -47,10 +79,19 @@ const ClientSignUp = () => {
                 <input
                   type="email"
                   className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      email: validateField("email", e.target.value),
+                    }));
+                  }}
                   value={email}
                   placeholder="Enter email"
                 />
+                {errors.email && (
+                  <p className="mt-1 text-md font-bold text-red-400">{errors.email}</p>
+                )}
 
                 <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                   <svg
@@ -81,9 +122,18 @@ const ClientSignUp = () => {
                   type="password"
                   className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
                   placeholder="Enter password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      password: validateField("password", e.target.value),
+                    }));
+                  }}
                   value={password}
                 />
+                {errors.password && (
+                  <p className="mt-1 text-md font-bold text-red-400">{errors.password}</p>
+                )}
 
                 <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                   <svg
@@ -110,7 +160,7 @@ const ClientSignUp = () => {
               </div>
             </div>
             {error && (
-              <div className="font-bold text-red-700 text-md error">
+              <div className="font-bold text-red-400 text-md error">
                 {error}
               </div>
             )}

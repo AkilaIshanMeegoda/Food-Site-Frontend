@@ -27,6 +27,7 @@ const foodImages = {
 };
 
 const Order = () => {
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const {
     cart,
@@ -88,16 +89,48 @@ const Order = () => {
     }
   };
 
+  const validateField = (name, value) => {
+    switch (name) {
+      case "customerName":
+        if (!value.trim()) return "Full Name is required";
+        if (!/^[A-Za-z]{3,}(?: [A-Za-z]+)*$/.test(value.trim()))
+          return "Full Name must be at least 3 letters and only letters";
+        return "";
+      case "customerEmail":
+        if (!value.trim()) return "Email is required";
+        if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value.trim()))
+          return "Invalid email address";
+        return "";
+      case "customerPhone":
+        if (!value.trim()) return "Phone Number is required";
+        if (!/^0\d{9}$/.test(value.trim()))
+          return "Phone Number must be 10 digits, start with 0, numbers only";
+        return "";
+      case "deliveryAddress":
+        if (!value.trim()) return "Delivery Address is required";
+        if (value.trim().length > 150)
+          return "Delivery Address must be less than 150 characters";
+        return "";
+      default:
+        return "";
+    }
+  };
+
   const stripeCheckout = async (orderData) => {
     try {
-      const response = await axios.post("http://localhost:8000/paymentApi/payment/checkout", orderData, {
-        headers: {
-          "Content-Type": "application/json"
+      const response = await axios.post(
+        "http://localhost:8000/paymentApi/payment/checkout",
+        orderData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
-  
+      );
+
       if (response.data.url) {
         window.location.href = response.data.url;
+        clearCart();
       } else {
         toast.error("Failed to get Stripe URL");
       }
@@ -107,7 +140,21 @@ const Order = () => {
     }
   };
 
+  const validateAllFields = () => {
+    const newErrors = {
+      customerName: validateField("customerName", customerName),
+      customerEmail: validateField("customerEmail", customerEmail),
+      customerPhone: validateField("customerPhone", customerPhone),
+      deliveryAddress: validateField("deliveryAddress", deliveryAddress),
+    };
+    setErrors(newErrors);
+    return Object.values(newErrors).every((err) => !err);
+  };
+
   const handlePlaceOrder = async () => {
+    if (!validateAllFields()) {
+      return;
+    }
     if (cart.items.length === 0) {
       toast.error("Your cart is empty!");
       return;
@@ -156,7 +203,7 @@ const Order = () => {
             },
           }
         );
-  
+
         if (response.data.success) {
           toast.success("Order placed successfully!");
           clearCart();
@@ -168,7 +215,6 @@ const Order = () => {
       } else if (paymentMethod === "card") {
         await stripeCheckout(orderData);
       }
-
     } catch (error) {
       console.error("Error placing order:", error);
       toast.error(error.response?.data?.message || "Failed to place order");
@@ -342,11 +388,25 @@ const Order = () => {
                     <input
                       type="text"
                       value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
+                      onChange={(e) => {
+                        setCustomerName(e.target.value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          customerName: validateField(
+                            "customerName",
+                            e.target.value
+                          ),
+                        }));
+                      }}
                       placeholder="Enter your name"
                       className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
+                    {errors.customerName && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.customerName}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block mb-1.5 text-sm font-medium text-gray-700">
@@ -355,11 +415,25 @@ const Order = () => {
                     <input
                       type="email"
                       value={customerEmail}
-                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      onChange={(e) => {
+                        setCustomerEmail(e.target.value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          customerEmail: validateField(
+                            "customerEmail",
+                            e.target.value
+                          ),
+                        }));
+                      }}
                       placeholder="Enter your email address"
                       className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
+                    {errors.customerEmail && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.customerEmail}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block mb-1.5 text-sm font-medium text-gray-700">
@@ -368,11 +442,26 @@ const Order = () => {
                     <input
                       type="tel"
                       value={customerPhone}
-                      onChange={(e) => setCustomerPhone(e.target.value)}
-                      placeholder="Enter your contact number"
+                      maxLength={10}
+                      onChange={(e) => {
+                        setCustomerPhone(e.target.value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          customerPhone: validateField(
+                            "customerPhone",
+                            e.target.value
+                          ),
+                        }));
+                      }}
+                      placeholder="Enter your contact number (Ex: 0712345678)"
                       className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
+                    {errors.customerPhone && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.customerPhone}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -390,16 +479,30 @@ const Order = () => {
                     <input
                       type="text"
                       value={deliveryAddress}
-                      onChange={(e) => setDeliveryAddress(e.target.value)}
+                      onChange={(e) => {
+                        setDeliveryAddress(e.target.value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          deliveryAddress: validateField(
+                            "deliveryAddress",
+                            e.target.value
+                          ),
+                        }));
+                      }}
                       placeholder="Enter your full address"
                       className="w-full px-4 py-3 transition-all border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       required
                     />
+                    {errors.deliveryAddress && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.deliveryAddress}
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block mb-1.5 text-sm font-medium text-gray-700">
-                      Delivery Instructions
+                      Delivery Instructions(Optional)
                     </label>
                     <textarea
                       value={deliveryInstructions}
@@ -742,17 +845,17 @@ const Order = () => {
                         Rs{order.totalAmount.toFixed(2)}
                       </span>
                     </div>
-                    
-                    {order.orderStatus !== 'false' && (
-  <div className="mt-4 text-right">
-    <button 
-      onClick={() => navigate(`/track-order/${order._id}`)}
-      className="px-4 py-2 text-sm font-medium text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
-    >
-      Track Order
-    </button>
-  </div>
-)}
+
+                    {order.orderStatus !== "false" && (
+                      <div className="mt-4 text-right">
+                        <button
+                          onClick={() => navigate(`/track-order/${order._id}`)}
+                          className="px-4 py-2 text-sm font-medium text-blue-600 transition-colors rounded-lg bg-blue-50 hover:bg-blue-100"
+                        >
+                          Track Order
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
