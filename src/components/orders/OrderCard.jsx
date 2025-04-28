@@ -136,6 +136,10 @@ const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
                       <span className="font-medium">Instructions:</span>{" "}
                       {order.deliveryInstructions || "None"}
                     </p>
+                    <p>
+                      <span className="font-medium">Phone Number:</span>{" "}
+                      {order.customerPhone || "None"}
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <p>
