@@ -11,7 +11,9 @@ const MenuItems = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:8000/restaurantApi/public/all-menu-items");
+      const response = await fetch(
+        "http://localhost:8000/restaurantApi/public/all-menu-items"
+      );
       console.log("Raw response:", response);
 
       if (!response.ok) {
@@ -67,10 +69,10 @@ const MenuItems = () => {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {items.length > 0 ? (
             items.map((item) => (
-              <MenuItemCard 
+              <MenuItemCard
                 key={item._id}
-                item={item} 
-                onCardClick={handleCardClick} 
+                item={item}
+                onCardClick={handleCardClick}
               />
             ))
           ) : (

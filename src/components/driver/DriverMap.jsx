@@ -6,7 +6,7 @@ import {
   Popup,
   useMap,
   CircleMarker,
-  Marker
+  Marker,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -19,18 +19,18 @@ L.Icon.Default.mergeOptions({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
   shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png"
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-const BACKEND_URL = "http://localhost:5003";
+const SOCKET_URL = "http://localhost:5003";
 
 const RecenterMap = ({ lat, lng }) => {
   const map = useMap();
   useEffect(() => {
     if (lat && lng) {
       console.log("📍 RecenterMap triggered. New center:", lat, lng);
-      map.setView([lat, lng], 10);  //zoom
-    } 
+      map.setView([lat, lng], 10); //zoom
+    }
   }, [lat, lng, map]);
   return null;
 };
@@ -46,63 +46,67 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
   // Get addresses to display based on the active delivery status
   useEffect(() => {
     if (!deliveries || !Array.isArray(deliveries)) return;
-    
+
     let locations = [];
-    
+
     if (!activeDelivery) {
       // Show all pending pickups if no active delivery
       locations = deliveries
-        .filter(delivery => delivery.status === "pending")
-        .map(delivery => ({
+        .filter((delivery) => delivery.status === "pending")
+        .map((delivery) => ({
           type: "pickup",
           address: delivery.pickupAddress,
           orderId: delivery.orderId,
           lat: delivery.pickupLat,
-          lng: delivery.pickupLng
+          lng: delivery.pickupLng,
         }));
     } else {
       // Handle based on the active delivery status
       switch (activeDelivery.status) {
         case "accepted":
           // Show only the accepted delivery's pickup location
-          locations = [{
-            type: "pickup",
-            address: activeDelivery.pickupAddress,
-            orderId: activeDelivery.orderId,
-            lat: activeDelivery.pickupLat,
-            lng: activeDelivery.pickupLng
-          }];
+          locations = [
+            {
+              type: "pickup",
+              address: activeDelivery.pickupAddress,
+              orderId: activeDelivery.orderId,
+              lat: activeDelivery.pickupLat,
+              lng: activeDelivery.pickupLng,
+            },
+          ];
           break;
         case "picked_up":
         case "on_the_way":
           // Show only the drop-off location
-          locations = [{
-            type: "dropoff",
-            address: activeDelivery.dropoffAddress,
-            orderId: activeDelivery.orderId,
-            lat: activeDelivery.dropoffLat,
-            lng: activeDelivery.dropoffLng
-          }];
+          locations = [
+            {
+              type: "dropoff",
+              address: activeDelivery.dropoffAddress,
+              orderId: activeDelivery.orderId,
+              lat: activeDelivery.dropoffLat,
+              lng: activeDelivery.dropoffLng,
+            },
+          ];
           break;
         default:
           // For other statuses or if delivered, show all pending pickups
           locations = deliveries
-            .filter(delivery => delivery.status === "pending")
-            .map(delivery => ({
+            .filter((delivery) => delivery.status === "pending")
+            .map((delivery) => ({
               type: "pickup",
               address: delivery.pickupAddress,
               orderId: delivery.orderId,
               lat: delivery.pickupLat,
-              lng: delivery.pickupLng
+              lng: delivery.pickupLng,
             }));
       }
     }
-    
+
     setDeliveryLocations(locations);
   }, [deliveries, activeDelivery]);
 
   useEffect(() => {
-    const socket = io(BACKEND_URL);
+    const socket = io(SOCKET_URL);
     setSocketInstance(socket);
 
     socket.on("connect", () => {
@@ -184,26 +188,41 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
   const getMarkerColor = (type) => {
     switch (type) {
       case "pickup":
-        return { fillColor: "#3388ff", color: "#0066cc", weight: 3, fillOpacity: 0.8 };
+        return {
+          fillColor: "#3388ff",
+          color: "#0066cc",
+          weight: 3,
+          fillOpacity: 0.8,
+        };
       case "dropoff":
-        return { fillColor: "#33cc33", color: "#009900", weight: 3, fillOpacity: 0.8 };
+        return {
+          fillColor: "#33cc33",
+          color: "#009900",
+          weight: 3,
+          fillOpacity: 0.8,
+        };
       default:
-        return { fillColor: "#ff3333", color: "#cc0000", weight: 3, fillOpacity: 0.8 };
+        return {
+          fillColor: "#ff3333",
+          color: "#cc0000",
+          weight: 3,
+          fillOpacity: 0.8,
+        };
     }
   };
 
   // Calculate bounds to fit all markers
   const getBounds = () => {
     const points = [];
-    
+
     if (driverLocation) {
       points.push([driverLocation.lat, driverLocation.lng]);
     }
-    
-    deliveryLocations.forEach(location => {
+
+    deliveryLocations.forEach((location) => {
       points.push([location.lat, location.lng]);
     });
-    
+
     return points.length > 0 ? L.latLngBounds(points) : null;
   };
 
@@ -226,7 +245,12 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
             attribution="&copy; OpenStreetMap contributors"
           />
 
-          {bounds && <RecenterMap lat={bounds.getCenter().lat} lng={bounds.getCenter().lng} />}
+          {bounds && (
+            <RecenterMap
+              lat={bounds.getCenter().lat}
+              lng={bounds.getCenter().lng}
+            />
+          )}
 
           {driverLocation && (
             <CircleMarker
@@ -256,7 +280,9 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
               pathOptions={getMarkerColor(location.type)}
             >
               <Popup>
-                <strong>{location.type === "pickup" ? "Pickup" : "Drop-off"}</strong>
+                <strong>
+                  {location.type === "pickup" ? "Pickup" : "Drop-off"}
+                </strong>
                 <br />
                 <strong>Address:</strong> {location.address}
                 <br />
@@ -266,9 +292,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
           ))}
         </MapContainer>
       </div>
-      {error && (
-        <div className="mt-4 font-medium text-red-500">⚠️ {error}</div>
-      )}
+      {error && <div className="mt-4 font-medium text-red-500">⚠️ {error}</div>}
       <div className="mt-4 p-3 bg-white rounded shadow">
         <h4 className="font-medium text-gray-700 mb-2">Map Legend:</h4>
         <div className="flex items-center space-x-4">
