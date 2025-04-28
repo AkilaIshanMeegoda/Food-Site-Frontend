@@ -32,7 +32,7 @@ const deliveryIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-const BACKEND_URL = "http://localhost:5003";
+const SOCKET_URL = "http://localhost:5003";
 
 // Component to recenter map when driver location changes
 const RecenterMap = ({ lat, lng }) => {
@@ -56,7 +56,7 @@ const CustomerMap = ({ orderId }) => {
   const defaultCenter = [6.9271, 79.8612]; // Colombo
 
   useEffect(() => {
-    const socket = io(BACKEND_URL);
+    const socket = io(SOCKET_URL);
 
     socket.on("connect", () => {
       console.log("✅ Socket connected for tracking");

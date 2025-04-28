@@ -22,7 +22,7 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png"
 });
 
-const BACKEND_URL = "http://localhost:5003";
+const SOCKET_URL = "http://localhost:5003";
 
 const RecenterMap = ({ lat, lng }) => {
   const map = useMap();
@@ -102,7 +102,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
   }, [deliveries, activeDelivery]);
 
   useEffect(() => {
-    const socket = io(BACKEND_URL);
+    const socket = io(SOCKET_URL);
     setSocketInstance(socket);
 
     socket.on("connect", () => {
