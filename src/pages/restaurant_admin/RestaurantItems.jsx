@@ -52,10 +52,12 @@ const RestaurantItems = () => {
     return (
       <div>
         <Navbar />
-        <div className="p-8 text-center text-red-500">Error: {error}</div>
+        <div className="p-8 text-center">
+          <p className="text-2xl font-semibold text-red-500">{error}</p>
+        </div>
       </div>
     );
-  }
+  } 
 
   return (
     <div>

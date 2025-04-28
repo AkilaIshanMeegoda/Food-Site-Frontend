@@ -9,13 +9,12 @@ const UpdateItem = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  if (!user) return <Navigate to="/login" replace />;
-
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
     category: "Burger",
+    preparationTime: "",
     isAvailable: true,
   });
   const [loading, setLoading] = useState(false);
@@ -23,13 +22,10 @@ const UpdateItem = () => {
 
   const categories = [
     "Burger",
-    "Pizza",
-    "Pasta",
     "Salad",
-    "Drinks",
-    "Dessert",
-    "Fried Rice",
+    "Pasta",
     "BBQ",
+    "Desserts",
   ];
 
   useEffect(() => {
@@ -49,6 +45,7 @@ const UpdateItem = () => {
           description: data.description,
           price: data.price,
           category: data.category,
+          preparationTime: data.preparationTime,
           isAvailable: data.isAvailable ?? true,
         });
       } catch (err) {
@@ -66,27 +63,33 @@ const UpdateItem = () => {
       ...prev,
       [name]: newValue,
     }));
-    if (type !== "checkbox") validateField(name, newValue);
+    if (type !== "checkbox") {
+      const errorMsg = validateField(name, newValue);
+      setErrors((prev) => ({ ...prev, [name]: errorMsg }));
+    }
   };
 
   const validateField = (name, value) => {
+    if (!value.toString().trim()) return `${name} is required`;
+  
     let error = "";
     switch (name) {
       case "name":
-        if (!value.trim()) error = "Name is required";
-        else if (value.length < 3) error = "Name must be at least 3 characters";
+        if (!/^[A-Za-z\s]+$/.test(value))
+          error = "Name cannot contain numbers or special characters";
+        else if (value.length < 3)
+          error = "Name must be at least 3 characters";
         break;
-      case "description":
-        if (!value.trim()) error = "Description is required";
+      case "preparationTime":
+        if (!/^\d+\s*-\s*\d+\s*Minutes$/i.test(value))
+          error = "Preparation time must be in format '12 - 15 Minutes'";
         break;
       case "price":
         const num = parseFloat(value);
         if (isNaN(num) || num <= 0) error = "Price must be a positive number";
         break;
-      default:
-        break;
+      // description required‐check handled above
     }
-    setErrors((prev) => ({ ...prev, [name]: error }));
     return error;
   };
 
@@ -119,7 +122,7 @@ const UpdateItem = () => {
           price: parseFloat(formData.price),
         }),
       });
-      if (!res.ok) throw new Error("Update failed");
+      if (!response.ok) throw new Error("Update failed");
       toast.success("Item updated successfully!");
       navigate("/restaurant_admin/dashboard/manage-items");
     } catch (err) {
@@ -147,6 +150,19 @@ const UpdateItem = () => {
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name}</p>
+              )}
+            </div>
+            {/* preparationTime */}
+            <div>
+              <label className="block text-sm font-medium">Preparation Time</label>
+              <input
+                name="preparationTime"
+                value={formData.preparationTime}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+              {errors.preparationTime && (
+                <p className="text-sm text-red-500">{errors.preparationTime}</p>
               )}
             </div>
             {/* Description */}
