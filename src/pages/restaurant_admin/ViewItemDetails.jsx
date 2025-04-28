@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import Navbar from "../../components/home/Navbar/Navbar";
 import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
-
+// restaurant owner side view item details page for viewing menu item details
 const ViewItemDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const ViewItemDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
-
+  // fetch item details from the API
   useEffect(() => {
     const fetchItem = async () => {
       try {
@@ -43,29 +43,6 @@ const ViewItemDetails = () => {
       fetchItem();
     }
   }, [id, user]);
-
-  const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      try {
-        const response = await fetch(`http://localhost:3000/inventory/delete-item/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to delete item");
-        }
-
-        toast.success("Item deleted successfully");
-        navigate("/manage-items");
-      } catch (err) {
-        toast.error("Failed to delete item");
-      }
-    }
-  };
 
   if (loading) {
     return (
@@ -146,23 +123,6 @@ const ViewItemDetails = () => {
                 <h2 className="mb-2 text-xl font-semibold">Description</h2>
                 <p className="text-gray-700">{item.description || "No description available"}</p>
               </div>
-
-              {/* {user?.role === "restaurant_admin" && (
-                <div className="flex mt-6 space-x-4">
-                  <button
-                    onClick={() => navigate(`/update-item/${id}`)}
-                    className="flex items-center px-4 py-2 text-white bg-yellow-500 rounded hover:bg-yellow-600"
-                  >
-                    <FaEdit className="mr-2" /> Edit Item
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    className="flex items-center px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
-                  >
-                    <FaTrash className="mr-2" /> Delete Item
-                  </button>
-                </div>
-              )} */}
             </div>
           </div>
         </div>

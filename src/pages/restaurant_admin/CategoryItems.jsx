@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar";
 import MenuItemCard from "../../components/menuItems/MenuItemCard"; // adjust the path if needed
-
+// User Side Category Items Page for displaying menu items based on selected category
 const CategoryItems = () => {
   const { category } = useParams(); // extract the category from the URL
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const CategoryItems = () => {
     fetchMenuItems();
   }, [category]);
 
-  // Optional: Handle click on a menu item to navigate to its details page
+  // View menu item details
   const handleMenuItemClick = (menuItemId, menuItemData) => {
     navigate(`/view-menuItem/${menuItemId}`, { state: menuItemData });
   };
