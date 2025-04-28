@@ -52,7 +52,7 @@ const ClientLogin = () => {
                   name="password"
                   id="password"
                   placeholder="Enter Password"
-                  minLength="6"
+                  minLength="1"
                   className="w-full px-4 py-3 mt-2 bg-gray-200 border rounded-lg focus:border-blue-500 focus:bg-white focus:outline-none"
                   required
                   onChange={(e) => setPassword(e.target.value)}

@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router";
-
+// menu item card component
 const MenuItemCard = ({ item, onCardClick }) => {
   const navigate = useNavigate();
   const { user } = useAuthContext();
@@ -18,7 +18,7 @@ const MenuItemCard = ({ item, onCardClick }) => {
     if (!item.isAvailable) return;
 
     const restaurantId = item.restaurantId || props.restaurantId;
-    const restaurantName = item.name || "Restaurant";
+    const restaurantName = item.restaurantName;
 
     if (!user || user.role !== "customer") {
       toast.error("Please login to add items to cart.");
@@ -38,7 +38,7 @@ const MenuItemCard = ({ item, onCardClick }) => {
       className="relative overflow-hidden transition-transform duration-300 transform bg-white shadow-lg cursor-pointer group rounded-2xl hover:scale-105"
       onClick={() => onCardClick(item._id)}
     >
-      {/* Image section with hover-cart overlay */}
+      {/* Image section */}
       <div className="relative h-48 bg-gray-100">
         {item.image ? (
           <img
@@ -47,7 +47,6 @@ const MenuItemCard = ({ item, onCardClick }) => {
             className="object-cover w-full h-full"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/300?text=No+Image";
             }}
           />
         ) : (
@@ -56,7 +55,7 @@ const MenuItemCard = ({ item, onCardClick }) => {
           </div>
         )}
 
-        {/* Add to Cart overlay button */}
+        {/* Add to Cart */}
         <button
           type="button"
           onClick={(e) => handleAddToCart(e, item)}

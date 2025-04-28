@@ -2,11 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
-  { name: "Fast Food", icon: "🌭" },
-  { name: "Non-Veg", icon: "🍗" },
-  { name: "Dessert", icon: "🍰" },
-  { name: "Cocktails", icon: "🍸" },
+  { name: "Burger", icon: "🍔" },
+  { name: "Salad", icon: "🥗" },
+  { name: "Pasta", icon: "🍝" },
   { name: "BBQ", icon: "🍖" },
+  { name: "Desserts", icon: "🍰" },
 ];
 
 const HomeContainer = () => {

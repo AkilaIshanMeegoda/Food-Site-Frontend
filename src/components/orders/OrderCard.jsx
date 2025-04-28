@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaCheckCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-// Tailwind classes for order statuses
+// order status styles
 const orderStatusStyles = {
   pending: "bg-yellow-400 text-gray-900",
   approved: "bg-green-500 text-white",
@@ -10,14 +10,14 @@ const orderStatusStyles = {
   shipped: "bg-blue-400 text-white",
 };
 
-// Tailwind classes for payment statuses
+// payment status styles
 const paymentStatusStyles = {
   pending: "bg-red-400 text-white",
   completed: "bg-green-500 text-white",
   failed: "bg-red-600 text-white",
   refunded: "bg-purple-500 text-white",
 };
-
+// restaurant owner side order details card
 const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
   const [expandedIds, setExpandedIds] = useState([]);
 
@@ -27,6 +27,11 @@ const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
     );
 
   const handleApprove = (id) => {
+    const order = orders.find((order) => order._id === id);
+    if (order?.orderStatus.toLowerCase() === "approved") {
+      toast.error("Order already approved!");
+      return;
+    }
     if (window.confirm("Are you sure you want to approve this order?")) {
       onApprove(id);
       toast.success("Order approved!");
@@ -41,7 +46,7 @@ const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
   return (
     <div className="p-6 space-y-6">
       <h2 className="text-3xl font-bold text-white">
-        Manage Orders – {restaurantName}
+        Manage Orders - {restaurantName}
       </h2>
 
       <div className="grid gap-6">
@@ -54,13 +59,7 @@ const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
 
           // Customer name and total calculation
           const customerName = order.customerName || order.customer?.name || "Guest";
-          const totalAmount =
-            order.totalAmount ||
-            order.items?.reduce(
-              (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
-              0
-            );
-
+          const totalAmount = order.totalAmount;
           return (
             <div
               key={order._id}
@@ -75,6 +74,9 @@ const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
                   </p>
                   <p className="text-md">
                     <span className="font-medium">Customer:</span> {customerName}
+                  </p>
+                  <p className="text-md">
+                    <span className="font-medium">Payment Method:</span> {order.paymentMethod}
                   </p>
                   <p className="text-md font-semibold">
                     Total: LKR {totalAmount.toLocaleString()}
@@ -135,6 +137,10 @@ const OrderCard = ({ orders, loading, error, onApprove, restaurantName }) => {
                     <p>
                       <span className="font-medium">Instructions:</span>{" "}
                       {order.deliveryInstructions || "None"}
+                    </p>
+                    <p>
+                      <span className="font-medium">Phone Number:</span>{" "}
+                      {order.customerPhone || "None"}
                     </p>
                   </div>
                   <div className="space-y-2">

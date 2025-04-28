@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Navbar from "../../components/home/Navbar/Navbar";
 import { useCart } from "../../context/CartContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
-
+// user side item details page
 const ItemDetails = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
@@ -12,7 +12,7 @@ const ItemDetails = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  // check if item is available and add to cart button
   const handleAddToCart = (e, item) => {
     e.stopPropagation();
     console.log(item);
@@ -20,7 +20,7 @@ const ItemDetails = () => {
     if (!item.isAvailable) return;
 
     const restaurantId = item.restaurantId || props.restaurantId;
-    const restaurantName = item.name || "Restaurant";
+    const restaurantName = item.restaurantName;
 
     if (!user || user.role !== "customer") {
       toast.error("Please login to add items to cart.");
@@ -38,7 +38,7 @@ const ItemDetails = () => {
     const fetchItemDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/public/menu-items/${id}`
+          `http://localhost:8000/restaurantApi/public/menu-items/${id}`
         );
         if (!response.ok) throw new Error("Failed to fetch item");
 
@@ -55,17 +55,18 @@ const ItemDetails = () => {
     fetchItemDetails();
   }, [id, navigate]);
 
-  if (loading) return <div className="text-center p-8">Loading...</div>;
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
 
   if (!item)
-    return <div className="text-center p-8 text-red-500">Item not found</div>;
+    return <div className="p-8 text-center text-red-500">Item not found</div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Navbar />
+      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 text-gray-600 hover:text-gray-800 flex items-center"
+          className="flex items-center mb-6 text-gray-600 hover:text-gray-800"
         >
           <svg
             className="w-5 h-5 mr-1"
@@ -83,41 +84,39 @@ const ItemDetails = () => {
           Back to Menu
         </button>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Image Section - Increased size */}
+        <div className="p-6 bg-white rounded-lg shadow-lg">
+          <div className="flex flex-col gap-8 lg:flex-row">
+            {/* Image Section */}
             <div className="lg:w-1/2">
               <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-[4/3]">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-full object-cover"
+                  className="object-cover w-full h-full"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      "https://via.placeholder.com/600?text=Image+Not+Available";
                   }}
                 />
               </div>
             </div>
 
-            {/* Details Section - Enhanced layout */}
-            <div className="lg:w-1/2 space-y-8">
+            {/* Details Section */}
+            <div className="space-y-8 lg:w-1/2">
               <h1 className="text-4xl font-bold text-gray-900">{item.name}</h1>
 
               <div className="space-y-6">
                 {/* Price Section */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="p-4 rounded-lg bg-gray-50">
                   {item.discountPercentage > 0 ? (
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-4">
                         <span className="text-3xl font-bold text-red-600">
                           Rs. {item.discountedPrice}
                         </span>
-                        <span className="text-gray-500 line-through text-lg">
+                        <span className="text-lg text-gray-500 line-through">
                           Rs. {item.price}
                         </span>
-                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                        <span className="px-3 py-1 text-sm text-green-800 bg-green-100 rounded-full">
                           {item.discountPercentage}% OFF
                         </span>
                       </div>
@@ -139,13 +138,13 @@ const ItemDetails = () => {
 
                 {/* Details Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 rounded-lg bg-gray-50">
                     <p className="text-sm text-gray-500">Category</p>
                     <p className="font-medium">
                       {item.category || "Uncategorized"}
                     </p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 rounded-lg bg-gray-50">
                     <p className="text-sm text-gray-500">Availability</p>
                     <p
                       className={`font-medium ${
@@ -155,14 +154,14 @@ const ItemDetails = () => {
                       {item.isAvailable ? "In Stock" : "Out of Stock"}
                     </p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 rounded-lg bg-gray-50">
                     <p className="text-sm text-gray-500">Preparation Time</p>
                     <p className="font-medium">
                       {item.preparationTime || "15-20 mins"}
                     </p>
                   </div>
                   <div>
-                    {/* Add to Cart Button */}
+                    {/* Add to Cart Button if unavailable cant add to cart */} 
                     <button
                       disabled={!item.isAvailable}
                       onClick={(e) => handleAddToCart(e, item)}
@@ -180,7 +179,7 @@ const ItemDetails = () => {
                 {/* Description Section */}
                 <div className="space-y-2">
                   <h3 className="text-xl font-semibold">Description</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="leading-relaxed text-gray-600">
                     {item.description || "No description available"}
                   </p>
                 </div>
@@ -189,7 +188,7 @@ const ItemDetails = () => {
                 {item.ingredients && (
                   <div className="space-y-2">
                     <h3 className="text-xl font-semibold">Ingredients</h3>
-                    <ul className="list-disc list-inside text-gray-600">
+                    <ul className="text-gray-600 list-disc list-inside">
                       {item.ingredients.map((ingredient, index) => (
                         <li key={index}>{ingredient}</li>
                       ))}

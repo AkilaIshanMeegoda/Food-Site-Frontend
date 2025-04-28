@@ -3,7 +3,7 @@ import OrderCard from '../../components/orders/OrderCard';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { toast } from 'react-toastify';
 import Navbar from '../../components/home/Navbar/Navbar';
-
+// restaurant owner side manage orders page for viewing and approving orders
 const ManageOrders = () => {
   const { user } = useAuthContext();
   const [orders, setOrders] = useState([]);
@@ -21,9 +21,9 @@ const ManageOrders = () => {
 
         setLoading(true);
         setError('');
-
+        // Fetch orders for the restaurant
         const response = await fetch(
-          `http://localhost:5002/api/orders/restaurant/${user.restaurantId}`,
+          `http://localhost:8000/orderApi/order/restaurant/${user.restaurantId}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -46,7 +46,7 @@ const ManageOrders = () => {
 
     fetchOrders();
   }, [user]);
-
+  // Handle order approval and delivery assignment
   const handleApprove = async (orderId) => {
     try {
       if (!user?.token) {
@@ -55,9 +55,9 @@ const ManageOrders = () => {
       }
       console.log("check orderId", orderId);
       
-      // 1. Update order status
+      // Update order status
       const response = await fetch(
-        `http://localhost:5002/api/order/${orderId}`,
+        `http://localhost:8000/orderApi/order/${orderId}`,
         {
           method: 'PATCH',
           headers: {
@@ -70,7 +70,7 @@ const ManageOrders = () => {
 
       if (!response.ok) throw new Error('Failed to approve order');
       
-      // 2. Find the order to get addresses
+      // Find the order to get addresses
       const order = orders.find(o => o._id === orderId);
       if (!order) throw new Error('Order not found');
 
@@ -78,10 +78,10 @@ const ManageOrders = () => {
       const pickupAddress = user?.restaurant?.address || order.restaurantAddress || '';
       const dropoffAddress = order.deliveryAddress || '';
 
-      // 3. Call delivery API to assign delivery
+      // Call delivery API to assign delivery
       try {
         const deliveryResponse = await fetch(
-          'http://localhost:5003/delivery/assign',
+          'http://localhost:8000/deliveryApi/delivery/assign',
           {
             method: 'POST',
             headers: {
@@ -105,7 +105,7 @@ const ManageOrders = () => {
         toast.warning('Order approved but delivery assignment failed: ' + deliveryErr.message);
       }
 
-      // 4. Update local state to show the change immediately
+      // Update local state to show the change immediately
       setOrders(orders.map(order =>
         order._id === orderId ? { ...order, orderStatus: 'approved' } : order
       ));

@@ -5,7 +5,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { Spinner } from "flowbite-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+// super admin dashboard page
 const SuperAdminDashBoard = () => {
   const { user } = useAuthContext();
   const [restaurants, setRestaurants] = useState([]);
@@ -13,12 +13,12 @@ const SuperAdminDashBoard = () => {
   const [orders, setOrders] = useState([]);
   const [loadingRestaurants, setLoadingRestaurants] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(false);
-
+  // fetch restaurants and orders data
   useEffect(() => {
     const fetchRestaurants = async () => {
       setLoadingRestaurants(true);
       try {
-        const res = await fetch("http://localhost:5001/api/public/restaurants");
+        const res = await fetch("http://localhost:8000/restaurantApi/public/restaurants");
         const json = await res.json();
         setRestaurants(json || []);
       } catch (err) {
@@ -30,13 +30,13 @@ const SuperAdminDashBoard = () => {
 
     fetchRestaurants();
   }, []);
-
+  // fetch orders for selected restaurant
   const handleRestaurantClick = async (restaurant) => {
     setSelectedRestaurant(restaurant);
     setLoadingOrders(true);
     try {
       const res = await fetch(
-        `http://localhost:5002/api/orders/restaurant/${restaurant._id}`,
+        `http://localhost:8000/orderApi/order/restaurant/${restaurant._id}`,
         {
             headers: { Authorization: `Bearer ${user.token}` }
         }
@@ -49,7 +49,7 @@ const SuperAdminDashBoard = () => {
       setLoadingOrders(false);
     }
   };
-
+  
   const totalOrders = orders.length;
   const totalIncome = orders
     .filter((o) => o.paymentStatus !== "pending")
@@ -59,11 +59,11 @@ const SuperAdminDashBoard = () => {
     <div className="min-h-screen bg-black dark:bg-white">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-white mb-6">Super Admin Dashboard</h1>
+      <div className="container px-4 py-8 mx-auto">
+        <h1 className="mb-6 text-2xl font-bold text-white">Super Admin Dashboard</h1>
 
         {/* Restaurant List */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
           {loadingRestaurants ? (
             <Spinner size="lg" />
           ) : (
@@ -71,14 +71,14 @@ const SuperAdminDashBoard = () => {
               <div
                 key={rest._id}
                 onClick={() => handleRestaurantClick(rest)}
-                className="bg-gray-900 p-4 rounded-lg cursor-pointer hover:bg-gray-800 transition"
+                className="p-4 transition bg-gray-900 rounded-lg cursor-pointer hover:bg-gray-800"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white font-semibold">{rest.name}</p>
-                    <p className="text-gray-400 text-sm">{rest.location || "No location"}</p>
+                    <p className="font-semibold text-white">{rest.name}</p>
+                    <p className="text-sm text-gray-400">{rest.location || "No location"}</p>
                   </div>
-                  <FaUtensils className="text-yellow-500 text-2xl" />
+                  <FaUtensils className="text-2xl text-yellow-500" />
                 </div>
               </div>
             ))
@@ -88,15 +88,15 @@ const SuperAdminDashBoard = () => {
         {/* Selected Restaurant Summary */}
         {selectedRestaurant && (
           <div className="mb-8">
-            <h2 className="text-xl text-white font-semibold mb-4">
+            <h2 className="mb-4 text-xl font-semibold text-white">
               Stats for: {selectedRestaurant.name}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-900 p-6 rounded-lg shadow-sm">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="p-6 bg-gray-900 rounded-lg shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-300 text-sm">Total Income</p>
+                    <p className="text-sm text-gray-300">Total Income</p>
                     {loadingOrders ? (
                       <Spinner size="lg" />
                     ) : (
@@ -105,21 +105,21 @@ const SuperAdminDashBoard = () => {
                       </p>
                     )}
                   </div>
-                  <FaDollarSign className="text-3xl text-green-500 bg-green-800 p-2 rounded-full" />
+                  <FaDollarSign className="p-2 text-3xl text-green-500 bg-green-800 rounded-full" />
                 </div>
               </div>
 
-              <div className="bg-gray-900 p-6 rounded-lg shadow-sm">
+              <div className="p-6 bg-gray-900 rounded-lg shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-300 text-sm">Total Orders</p>
+                    <p className="text-sm text-gray-300">Total Orders</p>
                     {loadingOrders ? (
                       <Spinner size="lg" />
                     ) : (
                       <p className="text-2xl font-bold text-white">{totalOrders}</p>
                     )}
                   </div>
-                  <FaClipboardList className="text-3xl text-blue-500 bg-blue-800 p-2 rounded-full" />
+                  <FaClipboardList className="p-2 text-3xl text-blue-500 bg-blue-800 rounded-full" />
                 </div>
               </div>
             </div>
@@ -128,9 +128,9 @@ const SuperAdminDashBoard = () => {
 
         {/* Orders Table */}
         {selectedRestaurant && (
-          <div className="bg-gray-900 rounded-lg shadow-sm overflow-hidden">
+          <div className="overflow-hidden bg-gray-900 rounded-lg shadow-sm">
             <div className="p-6">
-              <h2 className="text-lg font-semibold mb-4 text-white">Recent Orders</h2>
+              <h2 className="mb-4 text-lg font-semibold text-white">Recent Orders</h2>
               {loadingOrders ? (
                 <div className="flex justify-center">
                   <Spinner size="lg" />
@@ -140,7 +140,7 @@ const SuperAdminDashBoard = () => {
               ) : (
                 <div className="overflow-x-auto max-h-[300px] overflow-y-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-gray-800 sticky top-0 z-10">
+                    <thead className="sticky top-0 z-10 bg-gray-800">
                       <tr>
                         <th className="px-4 py-3 text-left text-gray-300">#</th>
                         <th className="px-4 py-3 text-left text-gray-300">Order ID</th>
@@ -151,7 +151,7 @@ const SuperAdminDashBoard = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-700">
                       {orders.map((order, idx) => (
-                        <tr key={order._id} className="hover:bg-gray-800 transition-colors">
+                        <tr key={order._id} className="transition-colors hover:bg-gray-800">
                           <td className="px-4 py-3 text-white">{idx + 1}</td>
                           <td className="px-4 py-3 text-white">{order._id}</td>
                           <td className="px-4 py-3 text-white">${order.totalAmount.toFixed(2)}</td>

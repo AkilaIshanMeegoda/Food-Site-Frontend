@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar";
 import MenuItemCard from "../../components/menuItems/MenuItemCard"; // adjust the path as needed
-
+// user side restaurant items page for displaying menu items based on selected restaurant
 const RestaurantItems = () => {
   const { id } = useParams(); // restaurant id from URL
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const RestaurantItems = () => {
   // Fetch menu items for the restaurant
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/public/restaurants/${id}/menu-items`);
+      const response = await fetch(`http://localhost:8000/restaurantApi/public/restaurants/${id}/menu-items`);
       if (!response.ok) {
         const errorResponse = await response.json();
         console.log("check error response", errorResponse);
@@ -52,17 +52,19 @@ const RestaurantItems = () => {
     return (
       <div>
         <Navbar />
-        <div className="p-8 text-center text-red-500">Error: {error}</div>
+        <div className="p-8 text-center">
+          <p className="text-2xl font-semibold text-red-500">{error}</p>
+        </div>
       </div>
     );
-  }
+  } 
 
   return (
     <div>
       <Navbar />
       <div className="p-8">
         <h1 className="mb-6 text-2xl font-bold">Restaurant Menu Items</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {menuItems.length > 0 ? (
             menuItems.map((menuItem) => (
               <MenuItemCard
@@ -72,7 +74,7 @@ const RestaurantItems = () => {
               />
             ))
           ) : (
-            <p className="text-center text-gray-500 col-span-full py-10">
+            <p className="py-10 text-center text-gray-500 col-span-full">
               No menu items available
             </p>
           )}

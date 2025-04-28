@@ -3,7 +3,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import SignupImg from "../../images/restaurant.jpg";
 import { toast } from "react-toastify";
 import Navbar from "../home/Navbar/Navbar";
-
+// to register a restaurant by a user
 const RestaurantSignUp = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -24,14 +24,12 @@ const RestaurantSignUp = () => {
       phone,
     };
 
-    // Retrieve owner id and email from the auth context.
-    const ownerId = user?.userId;
+    // Retrieve data from the auth context.
     const email = user?.email;
     const token = user?.token;
 
     // Combine all data into a payload.
     const payload = {
-      //   ownerId,
       email,
       token,
       role: "restaurant_admin",
@@ -40,8 +38,9 @@ const RestaurantSignUp = () => {
     console.log("checking payload", payload);
     try {
       setIsLoading(true);
+      // Send a POST request to the API endpoint to register the restaurant owner.
       const response = await fetch(
-        "http://localhost:5000/register-restaurant-owner",
+        "http://localhost:8000/userApi/user/register-restaurant-owner",
         {
           method: "POST",
           headers: {
@@ -60,7 +59,6 @@ const RestaurantSignUp = () => {
 
       // Registration successful
       toast.success("Registration successful!");
-      // Optionally redirect or reset fields here
     } catch (err) {
       setError(err.message);
     } finally {
