@@ -13,7 +13,7 @@ const MyDeliveries = () => {
   // Fetch deliveries function
   const fetchDeliveries = async () => {
     if (!user || !user.token) return;
-    
+
     try {
       setLoading(true);
       const res = await axios.get(
@@ -22,7 +22,7 @@ const MyDeliveries = () => {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      setDeliveries(res.data || []);  // Ensure it defaults to an empty array if data is undefined
+      setDeliveries(res.data || []); // Ensure it defaults to an empty array if data is undefined
       setLoading(false);
     } catch (err) {
       console.error("Fetch deliveries error:", err);
@@ -34,14 +34,14 @@ const MyDeliveries = () => {
   useEffect(() => {
     if (user && user.token) {
       fetchDeliveries();
-    
+
       // Set up an interval to refresh deliveries periodically (every 30 seconds)
       const intervalId = setInterval(fetchDeliveries, 30000);
-      
+
       return () => clearInterval(intervalId);
     }
   }, [user]);
-  
+
   // Return early if user or token is not available - AFTER all hooks are defined
   if (!user || !user.token) {
     return (
@@ -59,9 +59,9 @@ const MyDeliveries = () => {
     try {
       await axios.post(
         "http://localhost:8000/deliveryApi/delivery/accept",
-        { 
-          orderId, 
-          deliveryPersonnelId: user.userId 
+        {
+          orderId,
+          deliveryPersonnelId: user.userId,
         },
         {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -72,7 +72,10 @@ const MyDeliveries = () => {
       fetchDeliveries();
     } catch (error) {
       toast.error("Failed to accept delivery.");
-      console.error("Accept delivery error:", error.response?.data || error.message);
+      console.error(
+        "Accept delivery error:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -89,7 +92,10 @@ const MyDeliveries = () => {
       fetchDeliveries();
     } catch (error) {
       toast.error("Failed to update status.");
-      console.error("Status update error:", error.response?.data || error.message);
+      console.error(
+        "Status update error:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -115,35 +121,43 @@ const MyDeliveries = () => {
   // 1. Available deliveries (pending and assigned to this driver)
   // 2. Active and completed deliveries (accepted or later status by this driver)
   const availableDeliveries = deliveries.filter(
-    d => d.status === "pending" && (d.assignedDrivers?.includes(user.userId) || false)
+    (d) =>
+      d.status === "pending" &&
+      (d.assignedDrivers?.includes(user.userId) || false)
   );
-  
+
   const myDeliveries = deliveries.filter(
-    d => d.status !== "pending" && d.deliveryPersonnelId === user.userId
+    (d) => d.status !== "pending" && d.deliveryPersonnelId === user.userId
   );
 
   // Find the active delivery (one that is accepted, picked up, or on the way)
   const activeDelivery = myDeliveries.find(
-    (d) => d.status === "accepted" || d.status === "picked_up" || d.status === "on_the_way"
+    (d) =>
+      d.status === "accepted" ||
+      d.status === "picked_up" ||
+      d.status === "on_the_way"
   );
-  
+
   // Get address to display based on delivery status
   const getActiveAddress = () => {
     if (!activeDelivery) return null;
-    
-    if (activeDelivery.status === "picked_up" || activeDelivery.status === "on_the_way") {
+
+    if (
+      activeDelivery.status === "picked_up" ||
+      activeDelivery.status === "on_the_way"
+    ) {
       return {
         label: "Heading to",
-        address: activeDelivery.dropoffAddress
+        address: activeDelivery.dropoffAddress,
       };
     } else {
       return {
         label: "Pickup from",
-        address: activeDelivery.pickupAddress
+        address: activeDelivery.pickupAddress,
       };
     }
   };
-  
+
   const activeAddress = getActiveAddress();
 
   return (
@@ -166,7 +180,7 @@ const MyDeliveries = () => {
               <h3 className="text-xl font-semibold mb-4 text-gray-700">
                 📬 Available Deliveries
               </h3>
-              
+
               {availableDeliveries.length === 0 ? (
                 <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
                   No available deliveries at the moment.
@@ -186,10 +200,17 @@ const MyDeliveries = () => {
                       {availableDeliveries.map((delivery) => (
                         <tr key={delivery._id} className="border-b">
                           <td className="px-4 py-3">
-                            {typeof delivery.orderId === 'object' ? delivery.orderId : delivery.orderId.substring(0, 10)}...
+                            {typeof delivery.orderId === "object"
+                              ? delivery.orderId
+                              : delivery.orderId.substring(0, 10)}
+                            ...
                           </td>
-                          <td className="px-4 py-3">{delivery.pickupAddress}</td>
-                          <td className="px-4 py-3">{delivery.dropoffAddress}</td>
+                          <td className="px-4 py-3">
+                            {delivery.pickupAddress}
+                          </td>
+                          <td className="px-4 py-3">
+                            {delivery.dropoffAddress}
+                          </td>
                           <td className="px-4 py-3 text-center">
                             <button
                               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
@@ -211,7 +232,7 @@ const MyDeliveries = () => {
               <h3 className="text-xl font-semibold mb-4 text-gray-700">
                 🚚 My Active & Completed Deliveries
               </h3>
-              
+
               {myDeliveries.length === 0 ? (
                 <div className="text-center text-gray-600 bg-white p-6 rounded-lg shadow-inner">
                   You haven't accepted any deliveries yet.
@@ -230,28 +251,47 @@ const MyDeliveries = () => {
                     </thead>
                     <tbody>
                       {myDeliveries.map((delivery) => (
-                        <tr 
-                          key={delivery._id} 
-                          className={`border-b ${activeDelivery && activeDelivery.orderId === delivery.orderId ? 'bg-orange-50' : ''}`}
+                        <tr
+                          key={delivery._id}
+                          className={`border-b ${
+                            activeDelivery &&
+                            activeDelivery.orderId === delivery.orderId
+                              ? "bg-orange-50"
+                              : ""
+                          }`}
                         >
                           <td className="px-4 py-3">
-                            {typeof delivery.orderId === 'object' ? delivery.orderId : delivery.orderId.substring(0, 10)}...
+                            {typeof delivery.orderId === "object"
+                              ? delivery.orderId
+                              : delivery.orderId.substring(0, 10)}
+                            ...
                           </td>
-                          <td className="px-4 py-3">{delivery.pickupAddress}</td>
-                          <td className="px-4 py-3">{delivery.dropoffAddress}</td>
+                          <td className="px-4 py-3">
+                            {delivery.pickupAddress}
+                          </td>
+                          <td className="px-4 py-3">
+                            {delivery.dropoffAddress}
+                          </td>
                           <td className="px-4 py-3">
                             <span className={getStatusBadge(delivery.status)}>
-                              {delivery.status.replaceAll("_", " ").toUpperCase()}
+                              {delivery.status
+                                .replaceAll("_", " ")
+                                .toUpperCase()}
                             </span>
                           </td>
                           <td className="px-4 py-3 text-center">
                             {delivery.status === "delivered" ? (
-                              <span className="text-green-600 font-medium">✓ Completed</span>
+                              <span className="text-green-600 font-medium">
+                                ✓ Completed
+                              </span>
                             ) : (
                               <select
                                 value={delivery.status}
                                 onChange={(e) =>
-                                  handleStatusUpdate(delivery.orderId, e.target.value)
+                                  handleStatusUpdate(
+                                    delivery.orderId,
+                                    e.target.value
+                                  )
                                 }
                                 className="border p-2 rounded"
                               >
@@ -273,7 +313,6 @@ const MyDeliveries = () => {
         )}
 
         <div className="mt-8">
-
           <h3 className="text-xl font-semibold text-center mb-4">
             📍 Real-Time Delivery Map
           </h3>
@@ -283,55 +322,78 @@ const MyDeliveries = () => {
             deliveries={myDeliveries}
             activeDelivery={activeDelivery}
           />
-          
+
           {activeDelivery && (
             <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center mb-2">
-                <div className={`w-3 h-3 rounded-full mr-2 ${
-                  activeDelivery.status === "accepted" ? "bg-blue-500" : 
-                  activeDelivery.status === "picked_up" ? "bg-indigo-500" : 
-                  "bg-orange-500"
-                }`}></div>
+                <div
+                  className={`w-3 h-3 rounded-full mr-2 ${
+                    activeDelivery.status === "accepted"
+                      ? "bg-blue-500"
+                      : activeDelivery.status === "picked_up"
+                      ? "bg-indigo-500"
+                      : "bg-orange-500"
+                  }`}
+                ></div>
                 <h4 className="font-medium text-blue-700">Active Delivery</h4>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Order ID</p>
-                  <p className="font-medium">{typeof activeDelivery.orderId === 'object' ? activeDelivery.orderId : activeDelivery.orderId.substring(0, 10)}...</p>
+                  <p className="font-medium">
+                    {typeof activeDelivery.orderId === "object"
+                      ? activeDelivery.orderId
+                      : activeDelivery.orderId.substring(0, 10)}
+                    ...
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Status</p>
-                  <p className="font-medium capitalize">{activeDelivery.status.replaceAll("_", " ")}</p>
+                  <p className="font-medium capitalize">
+                    {activeDelivery.status.replaceAll("_", " ")}
+                  </p>
                 </div>
                 {activeAddress && (
                   <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600">{activeAddress.label}</p>
+                    <p className="text-sm text-gray-600">
+                      {activeAddress.label}
+                    </p>
                     <p className="font-medium">{activeAddress.address}</p>
                   </div>
                 )}
               </div>
-              
+
               {activeDelivery.status === "accepted" && (
                 <div className="mt-3 pt-3 border-t border-blue-200">
                   <p className="text-sm">
-                    <span className="font-medium text-blue-700">Next Step:</span> Update status to "Picked Up" once you've collected the package
+                    <span className="font-medium text-blue-700">
+                      Next Step:
+                    </span>{" "}
+                    Update status to "Picked Up" once you've collected the
+                    package
                   </p>
                 </div>
               )}
-              
+
               {activeDelivery.status === "picked_up" && (
                 <div className="mt-3 pt-3 border-t border-blue-200">
                   <p className="text-sm">
-                    <span className="font-medium text-blue-700">Next Step:</span> Update status to "On The Way" during transit
+                    <span className="font-medium text-blue-700">
+                      Next Step:
+                    </span>{" "}
+                    Update status to "On The Way" during transit
                   </p>
                 </div>
               )}
-              
+
               {activeDelivery.status === "on_the_way" && (
                 <div className="mt-3 pt-3 border-t border-blue-200">
                   <p className="text-sm">
-                    <span className="font-medium text-blue-700">Next Step:</span> Update status to "Delivered" once the package is delivered
+                    <span className="font-medium text-blue-700">
+                      Next Step:
+                    </span>{" "}
+                    Update status to "Delivered" once the package is delivered
                   </p>
                 </div>
               )}
