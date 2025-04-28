@@ -3,7 +3,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+// restaurant owner side update item page for updating menu items
 const UpdateItem = () => {
   const { user } = useAuthContext();
   const { id } = useParams();
@@ -27,7 +27,7 @@ const UpdateItem = () => {
     "BBQ",
     "Desserts",
   ];
-
+  // Fetch item data when component mounts
   useEffect(() => {
     const fetchItem = async () => {
       if (!user) return;
@@ -68,7 +68,7 @@ const UpdateItem = () => {
       setErrors((prev) => ({ ...prev, [name]: errorMsg }));
     }
   };
-
+  // Validate fields
   const validateField = (name, value) => {
     if (!value.toString().trim()) return `${name} is required`;
   
@@ -88,11 +88,10 @@ const UpdateItem = () => {
         const num = parseFloat(value);
         if (isNaN(num) || num <= 0) error = "Price must be a positive number";
         break;
-      // description required‐check handled above
     }
     return error;
   };
-
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -110,7 +109,7 @@ const UpdateItem = () => {
 
     setLoading(true);
     try {
-
+      // Check if user is authenticated
       const response = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
         method: "PUT",
         headers: {
