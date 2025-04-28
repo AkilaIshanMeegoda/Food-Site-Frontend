@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Navbar from "../../components/home/Navbar/Navbar";
 import { useCart } from "../../context/CartContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
-
+// user side item details page
 const ItemDetails = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
@@ -12,7 +12,7 @@ const ItemDetails = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  // check if item is available and add to cart button
   const handleAddToCart = (e, item) => {
     e.stopPropagation();
     console.log(item);
@@ -86,7 +86,7 @@ const ItemDetails = () => {
 
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <div className="flex flex-col gap-8 lg:flex-row">
-            {/* Image Section - Increased size */}
+            {/* Image Section */}
             <div className="lg:w-1/2">
               <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-[4/3]">
                 <img
@@ -95,14 +95,12 @@ const ItemDetails = () => {
                   className="object-cover w-full h-full"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      "https://via.placeholder.com/600?text=Image+Not+Available";
                   }}
                 />
               </div>
             </div>
 
-            {/* Details Section - Enhanced layout */}
+            {/* Details Section */}
             <div className="space-y-8 lg:w-1/2">
               <h1 className="text-4xl font-bold text-gray-900">{item.name}</h1>
 
@@ -163,7 +161,7 @@ const ItemDetails = () => {
                     </p>
                   </div>
                   <div>
-                    {/* Add to Cart Button */}
+                    {/* Add to Cart Button if unavailable cant add to cart */} 
                     <button
                       disabled={!item.isAvailable}
                       onClick={(e) => handleAddToCart(e, item)}

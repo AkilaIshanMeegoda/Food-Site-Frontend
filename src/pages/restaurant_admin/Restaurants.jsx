@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar"; // update the path if needed
-
+// user side restaurants page for displaying all restaurants
 const Restaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,9 +17,7 @@ const Restaurants = () => {
       }
       const result = await response.json();
 
-      // Assuming the API returns an array of restaurants directly.
-      // If your response contains the data in a nested property (like result.data),
-      // adjust the assignment accordingly.
+      // Adjust if the API wraps the restaurants array in a nested property
       const restaurantsData = result.data || result;
       setRestaurants(Array.isArray(restaurantsData) ? restaurantsData : []);
       setLoading(false);
@@ -36,8 +34,6 @@ const Restaurants = () => {
 
   // Function to handle click on a restaurant card, navigating to RestaurantItems page.
   const handleCardClick = (restaurantId, restaurantData) => {
-    // Navigate to /restaurant/{restaurantId}.
-    // This route should render your RestaurantItems page.
     navigate(`/restaurants-all-items/${restaurantId}`, { state: restaurantData });
   };
 

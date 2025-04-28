@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar";
-import MenuItemCard from "../menuItems/MenuItemCard"; // adjust the path accordingly
-
+import MenuItemCard from "../menuItems/MenuItemCard";
+// show all menu items in a grid layout
 const MenuItems = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
