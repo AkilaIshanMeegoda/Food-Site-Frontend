@@ -162,7 +162,7 @@ const MyDeliveries = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+      
       <div className="max-w-6xl px-4 py-10 mx-auto">
         <h2 className="mb-6 text-3xl font-bold text-center text-orange-500">
           📦 My Deliveries
@@ -178,7 +178,7 @@ const MyDeliveries = () => {
             {/* Available deliveries section */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold mb-4 text-gray-700">
-                📬 Available Deliveries
+                Available Deliveries
               </h3>
 
               {availableDeliveries.length === 0 ? (
@@ -230,7 +230,7 @@ const MyDeliveries = () => {
             {/* My active/completed deliveries section */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold mb-4 text-gray-700">
-                🚚 My Active & Completed Deliveries
+                My Active & Completed Deliveries
               </h3>
 
               {myDeliveries.length === 0 ? (
