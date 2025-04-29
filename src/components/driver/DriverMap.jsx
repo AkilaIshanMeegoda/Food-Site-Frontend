@@ -28,7 +28,7 @@ const RecenterMap = ({ lat, lng }) => {
   const map = useMap();
   useEffect(() => {
     if (lat && lng) {
-      console.log("📍 RecenterMap triggered. New center:", lat, lng);
+      console.log("RecenterMap triggered. New center:", lat, lng);
       map.setView([lat, lng], 10); //zoom
     }
   }, [lat, lng, map]);
@@ -110,13 +110,13 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
     setSocketInstance(socket);
 
     socket.on("connect", () => {
-      console.log("✅ Socket connected! ID:", socket.id);
+      console.log("Socket connected! ID:", socket.id);
       socket.emit("registerDriver", { userId });
     });
 
     socket.on("driverLocation", (data) => {
       if (data.userId === userId) {
-        console.log("📡 Updating driver's location:", data);
+        console.log("Updating driver's location:", data);
         setDriverLocation({
           lat: data.lat,
           lng: data.lng,
@@ -127,7 +127,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
     });
 
     socket.on("connect_error", (err) => {
-      console.error("❌ Socket connection error:", err.message);
+      console.error("Socket connection error:", err.message);
       setError("Socket connection error");
     });
 
@@ -136,7 +136,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          console.log("📍 Position updated:", latitude, longitude);
+          console.log("Position updated:", latitude, longitude);
 
           socket.emit("locationUpdate", {
             userId: userId,
@@ -153,7 +153,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
           });
         },
         (err) => {
-          console.error("❌ Geolocation tracking failed:", err.message);
+          console.error("Geolocation tracking failed:", err.message);
           switch (err.code) {
             case err.PERMISSION_DENIED:
               setError("Permission denied for Geolocation");
@@ -292,7 +292,7 @@ const DriverMap = ({ userId, orderId, deliveries, activeDelivery }) => {
           ))}
         </MapContainer>
       </div>
-      {error && <div className="mt-4 font-medium text-red-500">⚠️ {error}</div>}
+      {error && <div className="mt-4 font-medium text-red-500">{error}</div>}
       <div className="mt-4 p-3 bg-white rounded shadow">
         <h4 className="font-medium text-gray-700 mb-2">Map Legend:</h4>
         <div className="flex items-center space-x-4">

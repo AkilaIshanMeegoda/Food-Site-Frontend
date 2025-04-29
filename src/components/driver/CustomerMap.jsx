@@ -55,7 +55,7 @@ const CustomerMap = ({ orderId }) => {
     const socket = io(SOCKET_URL);
 
     socket.on("connect", () => {
-      console.log("✅ Socket connected for tracking");
+      console.log("Socket connected for tracking");
     });
 
     console.log("test");
@@ -64,7 +64,7 @@ const CustomerMap = ({ orderId }) => {
       console.log("checking data", data);
       // Check if this update is for our specific order
       if (data.orderId === orderId) {
-        console.log("📍 Driver location update:", data);
+        console.log("Driver location update:", data);
         setDriverLocation({
           lat: data.lat,
           lng: data.lng,
@@ -75,7 +75,7 @@ const CustomerMap = ({ orderId }) => {
     });
 
     socket.on("connect_error", (err) => {
-      console.error("❌ Socket connection error:", err.message);
+      console.error("Socket connection error:", err.message);
       setError("Could not connect to tracking service");
       setLoading(false);
     });
