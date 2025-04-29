@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "flowbite-react";
 import { storage } from "./../../utils/firebaseConfig"; // Your firebase config should export `storage`
 import imageCompression from "browser-image-compression";
-
+// restaurant owner side add item page
 const AddItem = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const AddItem = () => {
     image: "",
     isAvailable: false,
   });
-
+  // Categories for the dropdown
   const categories = [
     "Burger",
     "Salad",
@@ -31,7 +31,7 @@ const AddItem = () => {
     "BBQ",
     "Desserts",
   ];
-
+  // Handle input changes and validation
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
@@ -65,12 +65,12 @@ const AddItem = () => {
     setFormData((prev) => ({ ...prev, [name]: newValue }));
     setErrors(newErrors);
   };
-
+  // Handle checkbox changes for availability
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
-
+  // Handle image upload and compression
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;

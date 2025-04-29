@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar";
 import MenuItemCard from "../../components/menuItems/MenuItemCard"; // adjust the path as needed
-
+// user side restaurant items page for displaying menu items based on selected restaurant
 const RestaurantItems = () => {
   const { id } = useParams(); // restaurant id from URL
   const navigate = useNavigate();

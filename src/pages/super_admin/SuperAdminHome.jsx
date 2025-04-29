@@ -5,7 +5,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "flowbite-react";
-
+// super admin home page for managing restaurants
 const SuperAdminHome = () => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
@@ -15,13 +15,13 @@ const SuperAdminHome = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch all restaurants using the new API endpoint
+        // Fetch all restaurants
         const restaurantsResponse = await fetch("http://localhost:8000/restaurantApi/restaurants/all-restaurants", {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         const restaurantsData = await restaurantsResponse.json();
         console.log("check", restaurantsData);
-        // Extract the restaurants array if necessary
+        // Extract the restaurants array
         setRestaurants(Array.isArray(restaurantsData) ? restaurantsData : restaurantsData.restaurants);
       } catch (error) {
         toast.error("Failed to fetch data");
@@ -37,6 +37,7 @@ const SuperAdminHome = () => {
   const handleToggleActive = async (restaurantId, currentActive) => {
     try {
       setLoading(true);
+      // Update the restaurant's active status
       const response = await fetch(`http://localhost:8000/restaurantApi/restaurants/update/${restaurantId}`, {
         method: "PATCH",
         headers: {
