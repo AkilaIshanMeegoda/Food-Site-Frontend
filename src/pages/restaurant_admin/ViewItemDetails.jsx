@@ -17,13 +17,16 @@ const ViewItemDetails = () => {
     const fetchItem = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:8000/restaurantApi/menu-items/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch item");
@@ -58,8 +61,8 @@ const ViewItemDetails = () => {
         <Navbar />
         <div className="p-8 text-center">
           <p className="text-xl text-red-500">{error}</p>
-          <button 
-            onClick={() => navigate(-1)} 
+          <button
+            onClick={() => navigate(-1)}
             className="px-4 py-2 mt-4 text-white bg-blue-600 rounded"
           >
             Go Back
@@ -75,8 +78,8 @@ const ViewItemDetails = () => {
         <Navbar />
         <div className="p-8 text-center">
           <p className="text-xl">Item not found</p>
-          <button 
-            onClick={() => navigate(-1)} 
+          <button
+            onClick={() => navigate(-1)}
             className="px-4 py-2 mt-4 text-white bg-blue-600 rounded"
           >
             Go Back
@@ -109,19 +112,46 @@ const ViewItemDetails = () => {
                 }}
               />
             </div>
-            
+
             <div className="p-6 md:w-1/2">
               <h1 className="mb-4 text-3xl font-bold">{item.name}</h1>
               <div className="mb-6">
-                <span className="text-2xl font-bold text-red-600">Rs. {item.price}</span>
+                <span className="text-2xl font-bold text-red-600">
+                  Rs. {item.price}
+                </span>
                 <span className="px-3 py-1 ml-4 text-sm text-blue-800 bg-blue-100 rounded-full">
                   {item.category}
                 </span>
               </div>
-              
+
               <div className="mb-6">
                 <h2 className="mb-2 text-xl font-semibold">Description</h2>
-                <p className="text-gray-700">{item.description || "No description available"}</p>
+                <p className="text-gray-700">
+                  {item.description || "No description available"}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4 mb-6 md:flex-row md:gap-12">
+                
+                <div>
+                  <h2 className="mb-1 text-lg font-semibold">
+                    Preparation Time
+                  </h2>
+                  <p className="text-gray-700">
+                    {item.preparationTime || "Not specified"}
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-1 text-lg font-semibold">Availability</h2>
+                  <p
+                    className={`text-gray-700 ${
+                      item.isAvailable ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {item.isAvailable ? "Available" : "Not Available"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
