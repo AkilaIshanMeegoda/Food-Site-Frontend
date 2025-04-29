@@ -25,7 +25,6 @@ const TrackOrder = () => {
     const fetchOrderAndDelivery = async () => {
       try {
         setLoading(true);
-        // TrackOrder.jsx - Inside fetchOrderAndDelivery
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
         if (!token || !user?.userId) {
