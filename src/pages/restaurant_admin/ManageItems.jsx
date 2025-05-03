@@ -3,14 +3,14 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar";
-
+// restaurant owner side manage items page for viewing, deleting and editing menu items
 const ManageItems = () => {
   const [items, setItems] = useState([]);
   const [loadingItems, setLoadingItems] = useState(true);
   const [loadingImages, setLoadingImages] = useState({});
   const { user } = useAuthContext();
   const navigate = useNavigate();
-
+// fetch menu items from the API
   const fetchItems = async () => {
     if (!user) return;
 
@@ -39,7 +39,7 @@ const ManageItems = () => {
   useEffect(() => {
     fetchItems();
   }, [user]);
-
+// delete menu item from the API
   const handleDelete = async (itemId) => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
@@ -110,14 +110,13 @@ const ManageItems = () => {
                 onClick={() => handleCardClick(item._id)}
               >
                 <div className="relative w-full h-48 overflow-hidden bg-gray-100">
-                  {/* Loading spinner */}
                   {loadingImages[item._id] && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-8 h-8 border-4 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
                     </div>
                   )}
 
-                  {/* Image with consistent sizing */}
+                  {/* Image */}
                   <img
                     src={
                       item.image ||

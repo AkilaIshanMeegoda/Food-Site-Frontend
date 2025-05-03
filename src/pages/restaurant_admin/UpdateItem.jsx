@@ -3,19 +3,18 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+// restaurant owner side update item page for updating menu items
 const UpdateItem = () => {
   const { user } = useAuthContext();
   const { id } = useParams();
   const navigate = useNavigate();
-
-  if (!user) return <Navigate to="/login" replace />;
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
     category: "Burger",
+    preparationTime: "",
     isAvailable: true,
   });
   const [loading, setLoading] = useState(false);
@@ -23,15 +22,12 @@ const UpdateItem = () => {
 
   const categories = [
     "Burger",
-    "Pizza",
-    "Pasta",
     "Salad",
-    "Drinks",
-    "Dessert",
-    "Fried Rice",
+    "Pasta",
     "BBQ",
+    "Desserts",
   ];
-
+  // Fetch item data when component mounts
   useEffect(() => {
     const fetchItem = async () => {
       if (!user) return;
@@ -49,6 +45,7 @@ const UpdateItem = () => {
           description: data.description,
           price: data.price,
           category: data.category,
+          preparationTime: data.preparationTime,
           isAvailable: data.isAvailable ?? true,
         });
       } catch (err) {
@@ -66,30 +63,35 @@ const UpdateItem = () => {
       ...prev,
       [name]: newValue,
     }));
-    if (type !== "checkbox") validateField(name, newValue);
+    if (type !== "checkbox") {
+      const errorMsg = validateField(name, newValue);
+      setErrors((prev) => ({ ...prev, [name]: errorMsg }));
+    }
   };
-
+  // Validate fields
   const validateField = (name, value) => {
+    if (!value.toString().trim()) return `${name} is required`;
+  
     let error = "";
     switch (name) {
       case "name":
-        if (!value.trim()) error = "Name is required";
-        else if (value.length < 3) error = "Name must be at least 3 characters";
+        if (!/^[A-Za-z\s]+$/.test(value))
+          error = "Name cannot contain numbers or special characters";
+        else if (value.length < 3)
+          error = "Name must be at least 3 characters";
         break;
-      case "description":
-        if (!value.trim()) error = "Description is required";
+      case "preparationTime":
+        if (!/^\d+\s*-\s*\d+\s*Minutes$/i.test(value))
+          error = "Preparation time must be in format '12 - 15 Minutes'";
         break;
       case "price":
         const num = parseFloat(value);
         if (isNaN(num) || num <= 0) error = "Price must be a positive number";
         break;
-      default:
-        break;
     }
-    setErrors((prev) => ({ ...prev, [name]: error }));
     return error;
   };
-
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -107,7 +109,7 @@ const UpdateItem = () => {
 
     setLoading(true);
     try {
-
+      // Check if user is authenticated
       const response = await fetch(`http://localhost:8000/restaurantApi/menu-items/${id}`, {
         method: "PUT",
         headers: {
@@ -119,7 +121,7 @@ const UpdateItem = () => {
           price: parseFloat(formData.price),
         }),
       });
-      if (!res.ok) throw new Error("Update failed");
+      if (!response.ok) throw new Error("Update failed");
       toast.success("Item updated successfully!");
       navigate("/restaurant_admin/dashboard/manage-items");
     } catch (err) {
@@ -147,6 +149,19 @@ const UpdateItem = () => {
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name}</p>
+              )}
+            </div>
+            {/* preparationTime */}
+            <div>
+              <label className="block text-sm font-medium">Preparation Time</label>
+              <input
+                name="preparationTime"
+                value={formData.preparationTime}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+              {errors.preparationTime && (
+                <p className="text-sm text-red-500">{errors.preparationTime}</p>
               )}
             </div>
             {/* Description */}

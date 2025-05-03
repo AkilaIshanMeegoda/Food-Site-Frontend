@@ -6,11 +6,11 @@ import {
   FaTruck,
   FaMapMarkerAlt,
   FaIdCard,
-  FaEnvelope 
+  FaEnvelope,
 } from "react-icons/fa";
 import { Footer } from "flowbite-react";
 import homeImage from "../../images/delivery.jpg";
-import { useNavigate } from "react-router-dom"; // import this
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../../components/home/Navbar/Navbar";
@@ -19,14 +19,43 @@ const DeliveryRegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    email: "", 
+    email: "",
     vehicleType: "",
     vehicleNumber: "",
     currentLocation: "",
   });
 
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    const { name, phone, email, vehicleType, vehicleNumber, currentLocation } = formData;
+    
+    if (!name.trim()) {
+      toast.error("Name is required");
+      return false;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      toast.error("Phone number must be 10 digits");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Invalid email address");
+      return false;
+    }
+    if (!vehicleType.trim()) {
+      toast.error("Vehicle type is required");
+      return false;
+    }
+    if (vehicleNumber.length < 5) {
+      toast.error("Vehicle number must be at least 5 characters");
+      return false;
+    }
+    if (!currentLocation.trim()) {
+      toast.error("Current location is required");
+      return false;
+    }
+    return true;
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -37,6 +66,8 @@ const DeliveryRegistrationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -51,10 +82,9 @@ const DeliveryRegistrationForm = () => {
 
       toast.success(response.data.message || "Registered successfully!");
 
-      //redirect after short delay or immediately
       setTimeout(() => {
         navigate("/login");
-      }, 1500); // optional delay so user can see the success message
+      }, 1500);
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
     }
@@ -63,18 +93,10 @@ const DeliveryRegistrationForm = () => {
   const fields = [
     { name: "name", placeholder: "Full Name", icon: <FaUser /> },
     { name: "phone", placeholder: "Phone Number", icon: <FaPhone /> },
-    { name: "email", placeholder: "Email Address", icon: <FaEnvelope  /> }, 
+    { name: "email", placeholder: "Email Address", icon: <FaEnvelope /> },
     { name: "vehicleType", placeholder: "Vehicle Type", icon: <FaTruck /> },
-    {
-      name: "vehicleNumber",
-      placeholder: "Vehicle Number",
-      icon: <FaIdCard />,
-    },
-    {
-      name: "currentLocation",
-      placeholder: "Current Location",
-      icon: <FaMapMarkerAlt />,
-    },
+    { name: "vehicleNumber", placeholder: "Vehicle Number", icon: <FaIdCard /> },
+    { name: "currentLocation", placeholder: "Current Location", icon: <FaMapMarkerAlt /> },
   ];
 
   return (
@@ -105,7 +127,6 @@ const DeliveryRegistrationForm = () => {
                   placeholder={field.placeholder}
                   value={formData[field.name]}
                   onChange={handleChange}
-                  required
                   className="flex-1 text-sm text-gray-700 bg-transparent outline-none"
                 />
               </div>
@@ -117,14 +138,11 @@ const DeliveryRegistrationForm = () => {
             >
               Register
             </button>
-
-            {message && (
-              <p className="mt-4 text-sm text-center text-red-600">{message}</p>
-            )}
           </form>
         </div>
       </div>
       <Footer />
+      <ToastContainer />
     </div>
   );
 };

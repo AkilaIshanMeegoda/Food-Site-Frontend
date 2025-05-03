@@ -5,7 +5,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "flowbite-react";
-
+// restaurant owner side home page for manage orders and restaurant status
 const Admin_Home = () => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
@@ -68,11 +68,11 @@ const Admin_Home = () => {
 
   // count all orders
   const totalOrders = orders.length;
-  // but only sum non-pending for income
+  // get total for non-pending orders
   const totalIncome = orders
     .filter(o => o.paymentStatus !== "pending")
     .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-
+  // handle restaurant availability
   const toggleAvailability = async () => {
     if (!user?.token || !user?.restaurantId) {
       toast.error("Authentication required");
@@ -182,7 +182,7 @@ const Admin_Home = () => {
           </div>
         </div>
 
-        {/* Recent Orders Table (all orders) */}
+        {/* Total Orders Table (all orders) */}
         <div className="overflow-hidden bg-gray-900 rounded-lg shadow-sm">
           <div className="p-6">
             <h2 className="mb-4 text-lg font-semibold text-white">

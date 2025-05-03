@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/home/Navbar/Navbar";
 import MenuItemCard from "../../components/menuItems/MenuItemCard"; // adjust the path as needed
-
+// user side restaurant items page for displaying menu items based on selected restaurant
 const RestaurantItems = () => {
   const { id } = useParams(); // restaurant id from URL
   const navigate = useNavigate();
@@ -52,10 +52,12 @@ const RestaurantItems = () => {
     return (
       <div>
         <Navbar />
-        <div className="p-8 text-center text-red-500">Error: {error}</div>
+        <div className="p-8 text-center">
+          <p className="text-2xl font-semibold text-red-500">{error}</p>
+        </div>
       </div>
     );
-  }
+  } 
 
   return (
     <div>

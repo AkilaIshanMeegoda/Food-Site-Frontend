@@ -5,7 +5,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { Spinner } from "flowbite-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+// super admin dashboard page
 const SuperAdminDashBoard = () => {
   const { user } = useAuthContext();
   const [restaurants, setRestaurants] = useState([]);
@@ -13,7 +13,7 @@ const SuperAdminDashBoard = () => {
   const [orders, setOrders] = useState([]);
   const [loadingRestaurants, setLoadingRestaurants] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(false);
-
+  // fetch restaurants and orders data
   useEffect(() => {
     const fetchRestaurants = async () => {
       setLoadingRestaurants(true);
@@ -30,7 +30,7 @@ const SuperAdminDashBoard = () => {
 
     fetchRestaurants();
   }, []);
-
+  // fetch orders for selected restaurant
   const handleRestaurantClick = async (restaurant) => {
     setSelectedRestaurant(restaurant);
     setLoadingOrders(true);
@@ -49,7 +49,7 @@ const SuperAdminDashBoard = () => {
       setLoadingOrders(false);
     }
   };
-
+  
   const totalOrders = orders.length;
   const totalIncome = orders
     .filter((o) => o.paymentStatus !== "pending")

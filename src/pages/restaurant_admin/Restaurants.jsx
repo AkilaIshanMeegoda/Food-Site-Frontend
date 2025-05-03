@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import restaurantImage from "../../images/restaurant-icon.jpg"; // update the path if needed
 import Navbar from "../../components/home/Navbar/Navbar"; // update the path if needed
-
+// user side restaurants page for displaying all restaurants
 const Restaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,15 +12,15 @@ const Restaurants = () => {
   // Fetch restaurants from the API endpoint.
   const fetchRestaurants = async () => {
     try {
-      const response = await fetch("http://localhost:8000/restaurantApi/public/restaurants");
+      const response = await fetch(
+        "http://localhost:8000/restaurantApi/public/restaurants"
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
 
-      // Assuming the API returns an array of restaurants directly.
-      // If your response contains the data in a nested property (like result.data),
-      // adjust the assignment accordingly.
+      // Adjust if the API wraps the restaurants array in a nested property
       const restaurantsData = result.data || result;
       setRestaurants(Array.isArray(restaurantsData) ? restaurantsData : []);
       setLoading(false);
@@ -36,9 +37,9 @@ const Restaurants = () => {
 
   // Function to handle click on a restaurant card, navigating to RestaurantItems page.
   const handleCardClick = (restaurantId, restaurantData) => {
-    // Navigate to /restaurant/{restaurantId}.
-    // This route should render your RestaurantItems page.
-    navigate(`/restaurants-all-items/${restaurantId}`, { state: restaurantData });
+    navigate(`/restaurants-all-items/${restaurantId}`, {
+      state: restaurantData,
+    });
   };
 
   if (loading) {
@@ -54,9 +55,7 @@ const Restaurants = () => {
     return (
       <div>
         <Navbar />
-        <div className="p-8 text-center text-red-500">
-          Error: {error}
-        </div>
+        <div className="p-8 text-center text-red-500">Error: {error}</div>
       </div>
     );
   }
@@ -72,27 +71,24 @@ const Restaurants = () => {
               <div
                 key={restaurant._id}
                 onClick={() => handleCardClick(restaurant._id, restaurant)}
-                className="overflow-hidden transition-shadow duration-300 bg-white rounded-lg shadow-md cursor-pointer hover:shadow-lg"
+                className="overflow-hidden transition-shadow duration-300 bg-white rounded-lg shadow-md cursor-pointer hover:shadow-xl"
               >
-                <div className="flex items-center justify-center h-48 p-4 bg-gray-50">
-                  {restaurant.image ? (
-                    <img
-                      src={restaurant.image}
-                      alt={restaurant.name}
-                      className="object-cover w-full h-full"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://via.placeholder.com/300?text=No+Image";
-                      }}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-full text-gray-500 bg-gray-200">
-                      No Image
-                    </div>
-                  )}
+                <div className="flex items-center justify-center h-64 p-4 bg-gray-50">
+                  <img
+                    src={restaurantImage}
+                    alt={restaurant.name}
+                    className="object-cover w-full h-full rounded-3xl"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "https://via.placeholder.com/300?text=No+Image";
+                    }}
+                  />
                 </div>
                 <div className="p-4">
-                  <h2 className="mb-2 text-lg font-semibold">{restaurant.name}</h2>
+                  <h2 className="mb-2 text-lg font-semibold">
+                    {restaurant.name}
+                  </h2>
                   <p className="text-sm text-gray-600 line-clamp-2">
                     {restaurant.address || "No address available"}
                   </p>
